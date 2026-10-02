@@ -161,6 +161,62 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* Rich text (Tiptap editor + sanitized HTML from the API) */
+@layer components {
+  .rich-text {
+    overflow-wrap: anywhere;
+  }
+  .rich-text > * + * {
+    margin-top: 0.5rem;
+  }
+  .rich-text ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+  }
+  .rich-text ol {
+    list-style: decimal;
+    padding-left: 1.5rem;
+  }
+  .rich-text a {
+    color: var(--information);
+    text-decoration: underline;
+  }
+  .rich-text code {
+    border-radius: var(--radius-sm);
+    background: var(--secondary);
+    padding: 0 0.25rem;
+    font-family: ui-monospace, monospace;
+  }
+  .rich-text pre {
+    border-radius: var(--radius-md);
+    background: var(--muted);
+    padding: 0.5rem 0.75rem;
+    overflow-x: auto;
+  }
+  .rich-text pre code {
+    background: none;
+    padding: 0;
+  }
+  .rich-text blockquote {
+    border-left: 2px solid var(--border);
+    padding-left: 0.75rem;
+    color: var(--subtle-foreground);
+  }
+  .rich-text h1,
+  .rich-text h2,
+  .rich-text h3 {
+    font-weight: 600;
+  }
+  /* Tiptap placeholder */
+  .rich-text p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+    color: var(--muted-foreground);
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

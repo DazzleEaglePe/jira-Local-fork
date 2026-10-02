@@ -43,7 +43,7 @@ function TaskRow({ task, projectsById }: { task: Task; projectsById: Map<number,
   return (
     <li data-animate="row">
       <Link
-        href={`/projects/${task.project_id}`}
+        href={`/tasks/${task.id}`}
         className="flex items-center gap-3 rounded-md px-3 py-2 transition-colors hover:bg-accent"
       >
         <TaskKey task={task} className="w-16 shrink-0" />

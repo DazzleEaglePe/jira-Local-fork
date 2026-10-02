@@ -41,10 +41,16 @@ Leyenda: ✅ migrado · 🟡 parcial · ⬜ pendiente · ➖ fuera de alcance (q
 | Buscar en el tablero | ✅ | 4 · filtro local por título (arrastre desactivado mientras filtras) |
 | Crear / renombrar / eliminar columnas | ⬜ | 6 |
 | Filtros avanzados del tablero (responsable, etiqueta) | ⬜ | 6 |
-| Detalle de tarea (modal + página) | ⬜ | 5 |
-| Editar título, descripción, prioridad, fechas | ⬜ | 5 |
-| Etiquetas y responsables | ⬜ | 5 |
-| Comentarios | ⬜ | 5 |
+| Detalle de tarea (modal + página) | ✅ | 5 · ruta interceptada `@modal/(.)tasks/[id]`; enlace directo abre la página |
+| Editar título, descripción, prioridad, fechas, progreso | ✅ | 5 · JSON Patch como Vue, actualización optimista |
+| Estado (columna) y marcar como hecha | ✅ | 5 |
+| Etiquetas (asignar, crear) y responsables (buscar, "Asignarme a mí") | ✅ | 5 |
+| Comentarios (crear, eliminar propios) | ✅ | 5 · Tiptap + DOMPurify |
+| Favorito, copiar enlace, eliminar tarea | ✅ | 5 |
+| Adjuntos | ⬜ | 7 |
+| Tareas relacionadas / subtareas | ⬜ | 7 |
+| Recordatorios y repetición | ⬜ | 7 |
+| Seguimiento de tiempo | ➖ | función Pro de Vikunja |
 | Vista Lista / Tabla | ⬜ | 6 |
 | Vista Gantt | ⬜ | 7 |
 | Ajustes de proyecto (editar, archivar, compartir) | ⬜ | 7 |

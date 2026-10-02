@@ -1,7 +1,6 @@
 "use client"
 
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { TooltipProvider } from "@/components/ui/tooltip"
 import { AppSidebar } from "./app-sidebar"
 import { CommandPalette } from "./command-palette"
 import { CreateProjectDialog } from "./create-project-dialog"
@@ -14,7 +13,7 @@ import { TopNav } from "./top-nav"
  */
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <TooltipProvider delayDuration={300}>
+    <>
       <div className="[--header-height:3rem]">
         <SidebarProvider
           className="flex flex-col"
@@ -31,6 +30,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </div>
       <CommandPalette />
       <CreateProjectDialog />
-    </TooltipProvider>
+    </>
   )
 }
