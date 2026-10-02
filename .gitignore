@@ -34,3 +34,6 @@ Thumbs.db
 # Temporary Screenshots
 *.png
 !frontend-src/frontend/src/**/*.png
+
+# Local test credentials
+credenciales-prueba.local.md
