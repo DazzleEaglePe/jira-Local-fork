@@ -51,7 +51,7 @@
 										class="icon is-small has-text-success mie-2"
 										@click.stop="() => collapseBucket(bucket)"
 									>
-										<Icon icon="check-double" />
+										<Check class="tw:size-4" />
 									</span>
 									<h2
 										class="title input"
@@ -306,6 +306,7 @@ import {useQuery, useQueryClient} from '@tanstack/vue-query'
 import {useRouter} from 'vue-router'
 import {useRouteQuery} from '@vueuse/router'
 import {useI18n} from 'vue-i18n'
+import {Check} from '@lucide/vue'
 import {draggableFor} from '@/components/base/Draggable'
 import type {SortableEvent} from 'sortablejs'
 
@@ -866,12 +867,14 @@ function unCollapseBucket(bucket: BucketResponse) {
 <style lang="scss">
 $ease-out: all .3s cubic-bezier(0.23, 1, 0.32, 1);
 $bucket-width: 300px;
-$bucket-header-height: 60px;
+$bucket-header-height: 48px;
 $bucket-right-margin: 1rem;
 // A shade below the page in both themes, so the --white cards read as raised. Opaque on purpose:
 // the sticky footer has to hide the cards scrolling under it.
 $bucket-background: color-mix(in srgb, black 6%, var(--site-background));
-$crazy-height-calculation: '100vh - 4.5rem - 1.5rem - 1rem - 1.5rem - 11px';
+// Jira-style page header in ProjectWrapper: title (30px + .75rem) and toolbar row (34px + 1rem)
+$project-page-header-height: 92px;
+$crazy-height-calculation: '100vh - 4.5rem - 1.5rem - 1rem - 1.5rem - 11px - #{$project-page-header-height}';
 $crazy-height-calculation-tasks: '#{$crazy-height-calculation} - 1rem - 2.5rem - 2rem - #{$button-height} - 1rem';
 $filter-container-height: '1rem - #{$switch-view-height}';
 
@@ -918,7 +921,7 @@ $filter-container-height: '1rem - #{$switch-view-height}';
 	}
 
 	.bucket {
-		border-radius: 12px;
+		border-radius: 8px;
 		position: relative;
 
 		margin: 0 $bucket-right-margin 0 0;
@@ -967,10 +970,14 @@ $filter-container-height: '1rem - #{$switch-view-height}';
 			transition: transform 0s;
 		}
 
+		// Jira column title: small caps-style label ("TO DO 6")
 		h2 {
-			font-size: 1rem;
+			font-size: .75rem;
 			margin: 0;
 			font-weight: 600 !important;
+			letter-spacing: .03em;
+			text-transform: uppercase;
+			color: var(--ui-muted-foreground);
 		}
 
 		&.new-bucket {
@@ -1015,7 +1022,9 @@ $filter-container-height: '1rem - #{$switch-view-height}';
 
 		.limit {
 			padding: 0 .5rem;
-			font-weight: bold;
+			font-size: .75rem;
+			font-weight: 500;
+			color: var(--ui-muted-foreground);
 
 			&.is-max {
 				color: var(--danger-text);
@@ -1041,8 +1050,8 @@ $filter-container-height: '1rem - #{$switch-view-height}';
 		block-size: min-content;
 		padding: .4rem .6rem .55rem;
 		background-color: $bucket-background;
-		border-end-start-radius: 12px;
-		border-end-end-radius: 12px;
+		border-end-start-radius: 8px;
+		border-end-end-radius: 8px;
 		transform: none;
 		// At fractional device pixel ratios the scroll clip ends below the sticky footer, showing a sliver of tasks
 		box-shadow: 0 1px 0 $bucket-background;

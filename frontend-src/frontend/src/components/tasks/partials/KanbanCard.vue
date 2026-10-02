@@ -21,22 +21,9 @@
 			alt=""
 			class="tw:w-full"
 		>
-		<div class="p-2">
-			<!-- Top Labels (Trello-style) -->
-			<div
-				v-if="task.labels && task.labels.length > 0"
-				class="kanban-card__labels mbe-1"
-			>
-				<Labels :labels="task.labels" />
-			</div>
-
-			<div class="tw:flex tw:items-start tw:gap-1 tw:justify-between mbe-1">
+		<div class="kanban-card__body">
+			<div class="tw:flex tw:items-start tw:gap-1 tw:justify-between">
 				<h3 class="kanban-card__title">
-					<Done
-						class="kanban-card__done"
-						:is-done="task.done"
-						variant="small"
-					/>
 					<RouterLink
 						:to="{ name: 'task.detail', params: {id: task.id} }"
 						class="kanban-card__title-link"
@@ -50,6 +37,14 @@
 				</h3>
 			</div>
 			
+			<!-- Labels below the title (Jira-style lozenges) -->
+			<div
+				v-if="task.labels && task.labels.length > 0"
+				class="kanban-card__labels"
+			>
+				<Labels :labels="task.labels" />
+			</div>
+
 			<span
 				v-if="projectTitle"
 				class="project-title"
@@ -64,7 +59,11 @@
 			/>
 			<div class="footer kanban-card__footer">
 				<div class="kanban-card__meta-left">
-					<span class="task-id">
+					<span
+						class="task-id"
+						:class="{'is-done': task.done}"
+					>
+						<SquareCheck class="task-type-icon" />
 						{{ getTaskIdentifier(task) }}
 						<span
 							v-if="showTaskPosition"
@@ -86,13 +85,6 @@
 							{{ formatDisplayDate(task.due_date) }}
 						</time>
 					</span>
-
-					<PriorityLabel
-						v-if="task.priority > 0"
-						:priority="task.priority"
-						:done="task.done"
-						class="is-inline-flex is-align-items-center"
-					/>
 
 					<span
 						v-if="!isEditorContentEmpty(task.description)"
@@ -129,14 +121,17 @@
 					/>
 				</div>
 
-				<div
-					v-if="task.assignees.length > 0"
-					class="kanban-card__assignees"
-				>
-					<AssigneeList
-						:assignees="task.assignees"
-						:avatar-size="22"
-					/>
+				<div class="kanban-card__meta-right">
+					<PriorityIcon :priority="task.priority" />
+					<div
+						v-if="task.assignees.length > 0"
+						class="kanban-card__assignees"
+					>
+						<AssigneeList
+							:assignees="task.assignees"
+							:avatar-size="24"
+						/>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -149,9 +144,9 @@ import {useRouter} from 'vue-router'
 
 import {useGlobalNow} from '@/composables/useGlobalNow'
 
-import PriorityLabel from '@/components/tasks/partials/PriorityLabel.vue'
+import {SquareCheck} from '@lucide/vue'
+import PriorityIcon from '@/components/tasks/partials/PriorityIcon.vue'
 import ProgressBar from '@/components/misc/ProgressBar.vue'
-import Done from '@/components/misc/Done.vue'
 import Labels from '@/components/tasks/partials/Labels.vue'
 import ChecklistSummary from './ChecklistSummary.vue'
 import CommentCount from './CommentCount.vue'
@@ -271,26 +266,31 @@ onBeforeUnmount(() => showCoverImage(null))
 </script>
 
 <style lang="scss" scoped>
-$task-background: var(--white);
+$task-background: var(--ui-card);
 
 .task {
 	-webkit-touch-callout: none; // iOS Safari
 	user-select: none;
 	cursor: pointer;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+	// Atlassian "raised" elevation
+	box-shadow: 0 1px 1px rgba(9, 30, 66, .25), 0 0 1px rgba(9, 30, 66, .31);
 	display: block;
 
 	font-size: .875rem;
-	border-radius: 8px;
-	border: 1px solid var(--card-border-color, transparent);
+	border-radius: 6px;
 	background: $task-background;
 	overflow: hidden;
-	transition: all 0.15s ease-in-out;
+	transition: background-color .15s ease, box-shadow .15s ease;
 
 	&:hover {
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-		border-color: var(--grey-300);
-		transform: translateY(-1px);
+		background: color-mix(in srgb, var(--ui-foreground) 4%, $task-background);
+	}
+
+	.kanban-card__body {
+		display: flex;
+		flex-direction: column;
+		gap: .5rem;
+		padding: .75rem;
 	}
 
 	&.loader-container.is-loading::after {
@@ -305,7 +305,6 @@ $task-background: var(--white);
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.25rem;
-		margin-block-end: 0.35rem;
 
 		:deep(.label-wrapper) {
 			display: flex;
@@ -319,7 +318,7 @@ $task-background: var(--white);
 			text-transform: uppercase;
 			letter-spacing: 0.04em;
 			padding: 2px 7px;
-			height: 1.25rem;
+			block-size: 1.25rem;
 			line-height: 1;
 			border-radius: 4px;
 			margin: 0;
@@ -329,9 +328,9 @@ $task-background: var(--white);
 	.kanban-card__title {
 		font-family: $family-sans-serif;
 		font-size: 0.875rem;
-		font-weight: 500;
-		line-height: 1.35;
-		color: var(--text-strong);
+		font-weight: 400;
+		line-height: 1.4;
+		color: var(--ui-card-foreground);
 		word-break: break-word;
 		display: flex;
 		align-items: flex-start;
@@ -343,7 +342,7 @@ $task-background: var(--white);
 			text-decoration: none;
 
 			&:hover {
-				color: var(--primary);
+				text-decoration: underline;
 			}
 		}
 	}
@@ -359,7 +358,14 @@ $task-background: var(--white);
 		align-items: center;
 		justify-content: space-between;
 		gap: 0.5rem;
-		margin-block-start: 0.45rem;
+
+		.kanban-card__meta-right {
+			display: flex;
+			align-items: center;
+			gap: .5rem;
+			flex-shrink: 0;
+			margin-inline-start: auto;
+		}
 
 		.kanban-card__meta-left {
 			display: flex;
@@ -368,14 +374,27 @@ $task-background: var(--white);
 			gap: 0.35rem;
 			font-size: 0.75rem;
 			color: var(--text-muted);
-			min-width: 0;
+			min-inline-size: 0;
 
+			// Jira issue key: type icon + key, struck through once done
 			.task-id {
 				font-size: 0.75rem;
-				color: var(--text-muted);
+				font-weight: 600;
+				color: var(--ui-muted-foreground);
 				display: inline-flex;
 				align-items: center;
+				gap: .25rem;
 				margin: 0;
+
+				&.is-done {
+					text-decoration: line-through;
+				}
+
+				.task-type-icon {
+					inline-size: 1rem;
+					block-size: 1rem;
+					color: var(--ui-information);
+				}
 			}
 
 			.due-date {
@@ -437,8 +456,6 @@ $task-background: var(--white);
 		.kanban-card__assignees {
 			display: flex;
 			align-items: center;
-			flex-shrink: 0;
-			margin-inline-start: auto;
 
 			:deep(.username) {
 				display: none !important;
@@ -516,10 +533,6 @@ $task-background: var(--white);
 			color: hsl(var(--danger-h), var(--danger-s), 68%);
 		}
 	}
-}
-
-.kanban-card__done {
-	margin-inline-end: .25rem;
 }
 
 .task-progress {

@@ -6,9 +6,17 @@
 			'is-archived': currentProject.is_archived,
 		}"
 	>
-		<h1 class="project-title-print">
-			{{ getProjectTitle(currentProject) }}
-		</h1>
+		<!-- Jira-style page header: project title above the view tabs -->
+		<div class="project-page-header">
+			<span
+				v-if="projectColor"
+				class="project-page-color"
+				:style="{'background-color': projectColor}"
+			/>
+			<h1 class="project-page-title">
+				{{ getProjectTitle(currentProject) }}
+			</h1>
+		</div>
 
 		<div
 			ref="switchViewContainerRef"
@@ -63,9 +71,15 @@
 					:to="getViewRoute(view)"
 					:tabindex="isOverflowing ? -1 : undefined"
 				>
+					<component
+						:is="getViewIcon(view)"
+						class="switch-view-icon"
+					/>
 					{{ getViewTitle(view) }}
 				</BaseButton>
 			</div>
+		</div>
+		<div class="project-toolbar d-print-none">
 			<slot name="header" />
 		</div>
 		<CustomTransition name="fade">
@@ -94,7 +108,10 @@ import Icon from '@/components/misc/Icon'
 import Message from '@/components/misc/Message.vue'
 import CustomTransition from '@/components/misc/CustomTransition.vue'
 
+import {ChartGantt, LayoutGrid, List, SquareKanban, Table} from '@lucide/vue'
+
 import {getProjectTitle} from '@/helpers/getProjectTitle'
+import {getHexColor} from '@/helpers/task'
 import {useTitle} from '@/composables/useTitle'
 
 import {useViewFiltersStore} from '@/stores/viewFilters'
@@ -167,6 +184,14 @@ function getViewTitle(view: ProjectView) {
 	return view.title ?? ''
 }
 
+const projectColor = computed(() => getHexColor(currentProject.value.hex_color))
+
+const VIEW_ICONS = {list: List, gantt: ChartGantt, table: Table, kanban: SquareKanban}
+
+function getViewIcon(view: ProjectView) {
+	return view.view_kind ? VIEW_ICONS[view.view_kind] : LayoutGrid
+}
+
 function getViewRoute(view: ProjectView) {
 	const viewId = view.id ?? 0
 	const storedQuery = viewFiltersStore.getViewQuery(viewId)
@@ -179,29 +204,64 @@ function getViewRoute(view: ProjectView) {
 </script>
 
 <style lang="scss" scoped>
+.project-page-header {
+	display: flex;
+	align-items: center;
+	gap: .5rem;
+	margin-block-end: .75rem;
+}
+
+.project-page-color {
+	flex: 0 0 auto;
+	inline-size: 1.5rem;
+	block-size: 1.5rem;
+	border-radius: 4px;
+}
+
+.project-page-title {
+	margin: 0;
+	font-size: 1.5rem;
+	font-weight: 600;
+	line-height: 1.25;
+	color: var(--ui-foreground);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+// Jira-style view tabs with a full-width divider underneath
 .switch-view-container {
 	position: relative;
 	min-block-size: $switch-view-height;
 	margin-block-end: 1rem;
-	
+	border-block-end: 1px solid var(--ui-border);
+
 	display: flex;
 	justify-content: space-between;
-	align-items: center;	
+	align-items: flex-end;
 	gap: 1rem;
-	
-	@media screen and (max-width: $tablet) {
-		justify-content: center;
-		flex-direction: column;
+}
+
+.project-toolbar {
+	display: flex;
+	align-items: center;
+	gap: .5rem;
+	margin-block-end: 1rem;
+
+	&:empty {
+		display: none;
 	}
 }
 
 .switch-view {
-	background: var(--white);
 	display: inline-flex;
-	border-radius: $radius;
-	font-size: .75rem;
-	box-shadow: var(--shadow-sm);
-	padding: .5rem;
+	gap: 1rem;
+	font-size: .875rem;
+}
+
+.switch-view-icon {
+	inline-size: 1rem;
+	block-size: 1rem;
 }
 
 .switch-view--hidden {
@@ -229,26 +289,25 @@ function getViewRoute(view: ProjectView) {
 }
 
 .switch-view-button {
-	padding: .25rem .5rem;
-	display: block;
+	display: inline-flex;
+	align-items: center;
+	gap: .375rem;
+	padding: .5rem .125rem;
 	white-space: nowrap;
-	border-radius: $radius;
-	transition: all 100ms;
-
-	&:not(:last-child) {
-		margin-inline-end: .5rem;
-	}
+	color: var(--ui-muted-foreground);
+	font-weight: 500;
+	border-block-end: 2px solid transparent;
+	margin-block-end: -1px;
+	transition: color 100ms, border-color 100ms;
 
 	&:hover {
-		color: var(--switch-view-color);
-		background: var(--switch-view-active-background);
+		color: var(--ui-foreground);
+		border-block-end-color: var(--ui-border);
 	}
 
 	&.is-active {
-		color: var(--switch-view-color);
-		background: var(--switch-view-active-background);
-		font-weight: bold;
-		box-shadow: var(--shadow-xs);
+		color: var(--ui-accent-foreground);
+		border-block-end-color: var(--ui-accent-foreground);
 	}
 }
 
@@ -257,14 +316,4 @@ function getViewRoute(view: ProjectView) {
 	margin-block-end: 1rem;
 }
 
-.project-title-print {
-	display: none;
-	font-size: 1.75rem;
-	text-align: center;
-	margin-block-end: .5rem;
-
-	@media print {
-		display: block;
-	}
-}
 </style>
