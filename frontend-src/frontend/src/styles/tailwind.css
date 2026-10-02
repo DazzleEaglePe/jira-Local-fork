@@ -1,3 +1,129 @@
 @layer theme, base, components, utilities;
 @import "tailwindcss/theme.css" layer(theme) prefix(tw);
 @import "tailwindcss/utilities.css" layer(utilities) prefix(tw);
+@import "tw-animate-css";
+
+/* Vikunja toggles dark mode with the `.dark` class on <html> */
+@custom-variant dark (&:is(.dark *));
+
+/* UI design tokens for shadcn-vue components (src/components/ui). */
+/* Namespaced as --ui-* so they never clash with Vikunja/Bulma variables */
+/* like --primary, --background or --border. */
+/* Palette follows Atlassian Design System patterns; primary action keeps */
+/* the Caja Ica corporate red. */
+:root {
+	--ui-radius: 0.5rem;
+
+	--ui-background: #fff;
+	--ui-foreground: #172b4d;
+	--ui-card: #fff;
+	--ui-card-foreground: #172b4d;
+	--ui-popover: #fff;
+	--ui-popover-foreground: #172b4d;
+
+	--ui-primary: #e30613;
+	--ui-primary-foreground: #fff;
+	--ui-secondary: #f1f2f4;
+	--ui-secondary-foreground: #172b4d;
+	--ui-muted: #f7f8f9;
+	--ui-muted-foreground: #626f86;
+	--ui-accent: #e9f2ff;
+	--ui-accent-foreground: #0c66e4;
+	--ui-destructive: #c9372c;
+
+	--ui-border: #dcdfe4;
+	--ui-input: #8590a2;
+	--ui-ring: #388bff;
+
+	--ui-success: #1f845a;
+	--ui-warning: #e2b203;
+	--ui-information: #0c66e4;
+	--ui-discovery: #6e5dc6;
+}
+
+:root.dark {
+	--ui-background: #1d2125;
+	--ui-foreground: #b6c2cf;
+	--ui-card: #22272b;
+	--ui-card-foreground: #b6c2cf;
+	--ui-popover: #282e33;
+	--ui-popover-foreground: #b6c2cf;
+
+	--ui-primary: #e30613;
+	--ui-primary-foreground: #fff;
+	--ui-secondary: #2c333a;
+	--ui-secondary-foreground: #b6c2cf;
+	--ui-muted: #161a1d;
+	--ui-muted-foreground: #8c9bab;
+	--ui-accent: #1c2b41;
+	--ui-accent-foreground: #579dff;
+	--ui-destructive: #f87168;
+
+	--ui-border: #38414a;
+	--ui-input: #738496;
+	--ui-ring: #85b8ff;
+
+	--ui-success: #4bce97;
+	--ui-warning: #f5cd47;
+	--ui-information: #579dff;
+	--ui-discovery: #9f8fef;
+}
+
+@theme inline {
+	--color-background: var(--ui-background);
+	--color-foreground: var(--ui-foreground);
+	--color-card: var(--ui-card);
+	--color-card-foreground: var(--ui-card-foreground);
+	--color-popover: var(--ui-popover);
+	--color-popover-foreground: var(--ui-popover-foreground);
+	--color-primary: var(--ui-primary);
+	--color-primary-foreground: var(--ui-primary-foreground);
+	--color-secondary: var(--ui-secondary);
+	--color-secondary-foreground: var(--ui-secondary-foreground);
+	--color-muted: var(--ui-muted);
+	--color-muted-foreground: var(--ui-muted-foreground);
+	--color-accent: var(--ui-accent);
+	--color-accent-foreground: var(--ui-accent-foreground);
+	--color-destructive: var(--ui-destructive);
+	--color-border: var(--ui-border);
+	--color-input: var(--ui-input);
+	--color-ring: var(--ui-ring);
+	--color-success: var(--ui-success);
+	--color-warning: var(--ui-warning);
+	--color-information: var(--ui-information);
+	--color-discovery: var(--ui-discovery);
+
+	--radius-sm: calc(var(--ui-radius) - 4px);
+	--radius-md: calc(var(--ui-radius) - 2px);
+	--radius-lg: var(--ui-radius);
+	--radius-xl: calc(var(--ui-radius) + 4px);
+}
+
+/* Tailwind preflight is not loaded (Bulma provides the reset), so give */
+/* shadcn-vue components the subset of preflight they rely on. */
+@layer base {
+	[data-slot] {
+		border: 0 solid var(--ui-border);
+		outline-color: color-mix(in oklab, var(--ui-ring) 50%, transparent);
+	}
+
+	button[data-slot] {
+		background-color: transparent;
+		color: inherit;
+		font: inherit;
+		cursor: pointer;
+	}
+
+	/* postcss-preset-env polyfills @layer with extra specificity, so this */
+	/* also wins over Bulma's `a { color }` while utilities still win over it */
+	a[data-slot] {
+		color: inherit;
+	}
+
+	ol[data-slot],
+	ul[data-slot] {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+}
