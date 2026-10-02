@@ -1,0 +1,174 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design tokens. Values come from the Atlassian Design System 2025 tokens
+ * (read from atlassian.design: --ds-surface, --ds-text, --ds-border, ...),
+ * mapped onto shadcn/ui variable names. The primary action keeps the
+ * Caja Ica corporate red; selection and focus use Atlassian blue.
+ */
+:root {
+  --radius: 0.375rem;
+
+  --background: #ffffff;           /* elevation.surface */
+  --foreground: #292a2e;           /* color.text */
+  --card: #ffffff;                 /* elevation.surface.raised */
+  --card-foreground: #292a2e;
+  --popover: #ffffff;              /* elevation.surface.overlay */
+  --popover-foreground: #292a2e;
+
+  --primary: #e30613;              /* Caja Ica red, CTA only */
+  --primary-foreground: #ffffff;
+  --secondary: #0515240f;          /* color.background.neutral */
+  --secondary-foreground: #292a2e;
+  --muted: #f8f8f8;                /* elevation.surface.sunken */
+  --muted-foreground: #6b6e76;     /* color.text.subtlest */
+  --accent: #0515240f;             /* color.background.neutral.subtle.hovered */
+  --accent-foreground: #292a2e;
+  --destructive: #c9372c;          /* color.background.danger.bold */
+  --border: #0b120e24;             /* color.border */
+  --input: #0b120e3d;
+  --ring: #4688ec;                 /* color.border.focused */
+
+  --subtle-foreground: #505258;    /* color.text.subtle */
+  --selected: #e9f2fe;             /* color.background.selected */
+  --selected-foreground: #1868db;  /* color.text.selected */
+  --information: #1868db;          /* color.link / brand.bold */
+  --success: #5b7f24;              /* color.background.success.bold */
+  --success-foreground: #4c6b1f;   /* color.text.success */
+  --warning: #fbc828;              /* color.background.warning.bold */
+  --warning-foreground: #9e4c00;   /* color.text.warning */
+  --danger-foreground: #ae2e24;    /* color.text.danger */
+  --discovery: #964ac0;            /* color.background.discovery.bold */
+
+  --shadow-raised: 0 1px 1px #1e1f2140, 0 0 1px #1e1f214f;      /* elevation.shadow.raised */
+  --shadow-overlay: 0 8px 12px #1e1f2126, 0 0 1px #1e1f214f;    /* elevation.shadow.overlay */
+
+  --sidebar: #ffffff;
+  --sidebar-foreground: #505258;   /* navigation uses color.text.subtle */
+  --sidebar-primary: #1868db;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #0515240f;
+  --sidebar-accent-foreground: #292a2e;
+  --sidebar-border: #0b120e24;
+  --sidebar-ring: #4688ec;
+
+  --chart-1: #1868db;
+  --chart-2: #5b7f24;
+  --chart-3: #fbc828;
+  --chart-4: #964ac0;
+  --chart-5: #c9372c;
+}
+
+.dark {
+  --background: #1f1f21;
+  --foreground: #cecfd2;
+  --card: #242528;
+  --card-foreground: #cecfd2;
+  --popover: #2b2c2f;
+  --popover-foreground: #cecfd2;
+
+  --primary: #e30613;
+  --primary-foreground: #ffffff;
+  --secondary: #ceced912;
+  --secondary-foreground: #cecfd2;
+  --muted: #18191a;
+  --muted-foreground: #96999e;
+  --accent: #ceced912;
+  --accent-foreground: #cecfd2;
+  --destructive: #f87168;
+  --border: #e3e4f21f;
+  --input: #e3e4f23d;
+  --ring: #8fb8f6;
+
+  --subtle-foreground: #a9abaf;
+  --selected: #1c2b42;
+  --selected-foreground: #669df1;
+  --information: #669df1;
+  --success: #94c748;
+  --success-foreground: #b3df72;
+  --warning: #fbc828;
+  --warning-foreground: #fbc828;
+  --danger-foreground: #fd9891;
+  --discovery: #c97cf4;
+
+  --shadow-raised: 0 1px 1px #01040480, 0 0 1px #01040480;
+  --shadow-overlay: 0 0 0 1px #bdbdbd1f, 0 8px 12px #0104045c, 0 0 1px 1px #01040480;
+
+  --sidebar: #1f1f21;
+  --sidebar-foreground: #a9abaf;
+  --sidebar-primary: #669df1;
+  --sidebar-primary-foreground: #1f1f21;
+  --sidebar-accent: #ceced912;
+  --sidebar-accent-foreground: #cecfd2;
+  --sidebar-border: #e3e4f21f;
+  --sidebar-ring: #8fb8f6;
+}
+
+@theme inline {
+  --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Ubuntu, "Helvetica Neue", sans-serif;
+
+  --radius-sm: 0.25rem;  /* radius.small */
+  --radius-md: 0.375rem; /* radius.medium */
+  --radius-lg: 0.5rem;   /* radius.large */
+  --radius-xl: 0.75rem;
+
+  --shadow-raised: var(--shadow-raised);
+  --shadow-overlay: var(--shadow-overlay);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-subtle-foreground: var(--subtle-foreground);
+  --color-selected: var(--selected);
+  --color-selected-foreground: var(--selected-foreground);
+  --color-information: var(--information);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-discovery: var(--discovery);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-size: 0.875rem; /* font.body: 14px / 20px */
+    line-height: 1.25rem;
+  }
+}
