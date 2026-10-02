@@ -5,6 +5,9 @@ import type { NextConfig } from "next"
 const VIKUNJA_API_URL = process.env.VIKUNJA_API_URL ?? "http://127.0.0.1:3456"
 
 const nextConfig: NextConfig = {
+  // Dev only: the team opens the app through 127.0.0.1 / the LAN IP, not "localhost"
+  allowedDevOrigins: ["127.0.0.1", "172.20.16.141"],
+
   async rewrites() {
     return [
       {

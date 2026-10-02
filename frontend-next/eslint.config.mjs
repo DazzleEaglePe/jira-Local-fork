@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // OpenAPI client generated from the Vikunja spec (copied from the Vue app)
+    "src/lib/api/generated/**",
   ]),
 ]);
 
