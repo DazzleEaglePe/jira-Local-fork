@@ -34,8 +34,13 @@ Leyenda: ✅ migrado · 🟡 parcial · ⬜ pendiente · ➖ fuera de alcance (q
 
 | Función | Estado | Sprint |
 |---|---|---|
-| Vista Kanban (columnas, mover tareas) | ⬜ | 4 |
-| Crear tarea en columna | ⬜ | 4 |
+| Vista Kanban (columnas, mover tareas) | ✅ | 4 · dnd-kit, mouse y teclado (←/→ entre columnas, ↑/↓ dentro) |
+| Crear tarea en columna | ✅ | 4 · Enter crea, Esc cancela, sigue abierto para crear varias |
+| "Mostrar más" en columnas con más de 25 tareas | ✅ | 4 |
+| Límite WIP visible / columna Hecho ✓ | ✅ | 4 |
+| Buscar en el tablero | ✅ | 4 · filtro local por título (arrastre desactivado mientras filtras) |
+| Crear / renombrar / eliminar columnas | ⬜ | 6 |
+| Filtros avanzados del tablero (responsable, etiqueta) | ⬜ | 6 |
 | Detalle de tarea (modal + página) | ⬜ | 5 |
 | Editar título, descripción, prioridad, fechas | ⬜ | 5 |
 | Etiquetas y responsables | ⬜ | 5 |
