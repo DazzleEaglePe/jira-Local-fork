@@ -21,9 +21,39 @@
 			v-if="currentProject?.id"
 			class="project-title-wrapper"
 		>
-			<span class="project-title">
-				{{ currentProject.title === '' ? $t('misc.loading') : getProjectTitle(currentProject) }}
-			</span>
+			<Breadcrumb
+				:aria-label="$t('navigation.breadcrumb')"
+				class="tw:min-w-0"
+			>
+				<BreadcrumbList class="tw:flex-nowrap">
+					<BreadcrumbItem class="tw:hidden tw:md:inline-flex">
+						<BreadcrumbLink as-child>
+							<RouterLink :to="{ name: 'projects.index' }">
+								{{ $t('project.projects') }}
+							</RouterLink>
+						</BreadcrumbLink>
+					</BreadcrumbItem>
+					<template
+						v-for="ancestor in projectAncestors"
+						:key="ancestor.id"
+					>
+						<BreadcrumbSeparator class="tw:hidden tw:md:block" />
+						<BreadcrumbItem class="tw:hidden tw:md:inline-flex">
+							<BreadcrumbLink as-child>
+								<RouterLink :to="{ name: 'project.index', params: { projectId: ancestor.id } }">
+									{{ getProjectTitle(ancestor) }}
+								</RouterLink>
+							</BreadcrumbLink>
+						</BreadcrumbItem>
+					</template>
+					<BreadcrumbSeparator class="tw:hidden tw:md:block" />
+					<BreadcrumbItem class="tw:min-w-0">
+						<BreadcrumbPage class="project-title">
+							{{ currentProject.title === '' ? $t('misc.loading') : getProjectTitle(currentProject) }}
+						</BreadcrumbPage>
+					</BreadcrumbItem>
+				</BreadcrumbList>
+			</Breadcrumb>
 
 			<BaseButton
 				v-if="!isEditorContentEmpty(currentProject.description)"
@@ -63,8 +93,9 @@
 		</div>
 
 		<div class="navbar-end">
-			<TimerBadge />
 			<OpenQuickActions />
+			<CreateMenu />
+			<TimerBadge />
 			<Notifications />
 			<BaseButton
 				v-tooltip="isDark ? $t('user.settings.appearance.colorScheme.light') : $t('user.settings.appearance.colorScheme.dark')"
@@ -153,6 +184,8 @@ import BaseButton from '@/components/base/BaseButton.vue'
 import MenuButton from '@/components/home/MenuButton.vue'
 import OpenQuickActions from '@/components/misc/OpenQuickActions.vue'
 import UserAvatar from '@/components/misc/UserAvatar.vue'
+import CreateMenu from '@/components/home/CreateMenu.vue'
+import {Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator} from '@/components/ui/breadcrumb'
 
 import { getProjectTitle } from '@/helpers/getProjectTitle'
 import { isEditorContentEmpty } from '@/helpers/editorContentEmpty'
@@ -162,10 +195,16 @@ import { useConfigStore } from '@/stores/config'
 import { useAuthStore } from '@/stores/auth'
 import {useCurrentProject} from '@/composables/useCurrentProject'
 import {useColorScheme} from '@/composables/useColorScheme'
+import {useProjects} from '@/composables/useProjects'
 
 const { isDark, toggleTheme } = useColorScheme()
 const baseStore = useBaseStore()
 const {currentProject} = useCurrentProject()
+const projectList = useProjects()
+// Parents of the current project, shown in the breadcrumb before its title
+const projectAncestors = computed(() =>
+	currentProject.value ? projectList.getAncestors(currentProject.value).slice(0, -1) : [],
+)
 const background = computed(() => baseStore.background)
 const canWriteCurrentProject = computed(() =>
 	currentProject.value?.max_permission !== null &&
@@ -210,7 +249,7 @@ $user-dropdown-width-mobile: 5rem;
 	min-block-size: $navbar-height;
 
 	background: var(--white);
-	border-bottom: 1px solid var(--border-light);
+	border-block-end: 1px solid var(--border-light);
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 
 	@media screen and (min-width: $tablet) {
@@ -263,7 +302,6 @@ $user-dropdown-width-mobile: 5rem;
 }
 
 .menu-button {
-	margin-inline-end: auto;
 	align-self: stretch;
 	flex: 0 0 auto;
 
@@ -272,31 +310,24 @@ $user-dropdown-width-mobile: 5rem;
 	}
 }
 
+// Jira-style breadcrumb, aligned to the start right after the menu button
 .project-title-wrapper {
-	margin-inline: auto;
 	display: flex;
 	align-items: center;
 
 	// this makes the truncated text of the project title work
 	// inside the flexbox parent
 	min-inline-size: 0;
-
-	@media screen and (min-width: $tablet) {
-		padding-inline: var(--navbar-gap-width);
-	}
 }
 
 .project-title {
-	font-size: 1rem;
+	display: block;
+	font-size: .875rem;
+	font-weight: 600;
 	// We need the following for overflowing ellipsis to work
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
-
-	@media screen and (min-width: $tablet) {
-		font-size: 1.125rem;
-		font-weight: 600;
-	}
 }
 
 .project-title-dropdown {
@@ -326,6 +357,8 @@ $user-dropdown-width-mobile: 5rem;
 	flex: 0 0 auto;
 	display: flex;
 	align-items: stretch;
+	gap: .25rem;
+	margin-inline-start: auto;
 
 	>* {
 		min-inline-size: var(--navbar-button-min-width);

@@ -20,16 +20,17 @@
     margin: 0;
     padding: 0;
     
+    // Jira-style rows: compact, subtle hover (tokens from styles/tailwind.css)
     &.other-menu-items li,
     li > div {
-      height: 44px;
+      height: 36px;
       display: flex;
       align-items: center;
       margin-inline: .5rem;
-      border-radius: $radius;
+      border-radius: 4px;
 
       &:hover {
-        background: var(--grey-100);
+        background: var(--ui-secondary);
       }
     }
 
@@ -55,7 +56,13 @@
     }
 
     .menu-item-icon {
-      color: var(--grey-600);
+      display: inline-flex;
+      color: var(--ui-muted-foreground);
+
+      svg {
+        width: 1rem;
+        height: 1rem;
+      }
     }
 
     .menu-list-dropdown-trigger {
@@ -97,31 +104,34 @@
       }
 
       > a {
-        color: $vikunja-nav-color;
-        padding: .75rem .5rem .75rem .25rem;
+        color: var(--ui-foreground);
+        font-size: .875rem;
+        padding: .5rem .5rem .5rem .25rem;
         transition: all 0.2s ease;
 
-        border-radius: $radius;
+        border-radius: 4px;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
         width: 100%;
 
         &:hover {
-          color: var(--text-strong);
+          color: var(--ui-foreground);
 
           .menu-item-icon {
-            color: var(--text-strong);
+            color: var(--ui-foreground);
           }
         }
 
+        // Atlassian "selected" state: blue tint + start indicator
         &.router-link-exact-active {
-          color: var(--primary);
-          background: hsla(var(--primary-h), var(--primary-s), 55%, 0.1);
+          color: var(--ui-accent-foreground);
+          background: var(--ui-accent);
+          box-shadow: inset 3px 0 0 var(--ui-accent-foreground);
           font-weight: 600;
 
           .menu-item-icon {
-            color: var(--primary);
+            color: var(--ui-accent-foreground);
           }
         }
 
@@ -132,7 +142,7 @@
         }
 
         &.router-link-exact-active .icon:not(.handle) {
-          color: var(--primary);
+          color: var(--ui-accent-foreground);
         }
 
         .handle {

@@ -846,7 +846,15 @@
     "home": "Caja Ica home",
     "toggleChildProjects": "Toggle sub-projects",
     "main": "Main navigation",
-    "savedFilters": "Saved filters"
+    "savedFilters": "Saved filters",
+    "search": "Search",
+    "create": "Create",
+    "createTask": "Task",
+    "createProject": "Project",
+    "createFilter": "Saved filter",
+    "createLabel": "Label",
+    "createTeam": "Team",
+    "breadcrumb": "Breadcrumb"
   },
   "misc": {
     "loading": "Loading…",

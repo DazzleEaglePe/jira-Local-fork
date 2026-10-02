@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BaseButton from '@/components/base/BaseButton.vue'
+import {Search} from '@lucide/vue'
 import {useBaseStore} from '@/stores/base'
 import {onBeforeUnmount, onMounted} from 'vue'
 import {eventToShortcutString} from '@/helpers/shortcut'
@@ -32,14 +32,21 @@ onBeforeUnmount(() => {
 function openQuickActions() {
 	baseStore.setQuickActionsActive(true)
 }
+
+const shortcutHint = isAppleDevice() ? '⌘K' : 'Ctrl K'
 </script>
 
 <template>
-	<BaseButton
-		class="trigger-button"
+	<button
+		type="button"
+		data-slot="search-trigger"
+		class="tw:flex tw:h-9 tw:w-9 tw:items-center tw:gap-2 tw:self-center tw:rounded-md tw:border tw:border-input/40 tw:bg-background tw:px-2.5 tw:text-sm tw:text-muted-foreground tw:transition-colors tw:hover:bg-secondary tw:focus-visible:ring-3 tw:focus-visible:ring-ring/50 tw:md:w-64"
 		:title="$t('keyboardShortcuts.quickSearch')"
+		:aria-label="$t('keyboardShortcuts.quickSearch')"
 		@click="openQuickActions"
 	>
-		<Icon icon="search" />
-	</BaseButton>
+		<Search class="tw:size-4 tw:shrink-0" />
+		<span class="tw:hidden tw:flex-1 tw:text-left tw:md:inline">{{ $t('navigation.search') }}</span>
+		<kbd class="tw:hidden tw:rounded tw:border tw:bg-muted tw:px-1.5 tw:font-sans tw:text-[11px] tw:font-medium tw:md:inline">{{ shortcutHint }}</kbd>
+	</button>
 </template>

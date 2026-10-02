@@ -381,7 +381,15 @@
 		"upcoming": "Próximas",
 		"settings": "Ajustes",
 		"imprint": "Imprimir",
-		"privacy": "Política de privacidad"
+		"privacy": "Política de privacidad",
+		"search": "Buscar",
+		"create": "Crear",
+		"createTask": "Tarea",
+		"createProject": "Proyecto",
+		"createFilter": "Filtro guardado",
+		"createLabel": "Etiqueta",
+		"createTeam": "Equipo",
+		"breadcrumb": "Ruta de navegación"
 	},
 	"misc": {
 		"loading": "Cargando…",

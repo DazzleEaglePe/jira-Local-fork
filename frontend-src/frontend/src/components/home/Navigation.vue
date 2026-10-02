@@ -25,7 +25,7 @@
 						:to="{ name: 'home'}"
 					>
 						<span class="menu-item-icon icon">
-							<Icon icon="calendar" />
+							<LayoutDashboard />
 						</span>
 						{{ $t('navigation.overview') }}
 					</RouterLink>
@@ -36,7 +36,7 @@
 						:to="{ name: 'tasks.range'}"
 					>
 						<span class="menu-item-icon icon">
-							<Icon :icon="['far', 'calendar-alt']" />
+							<CalendarDays />
 						</span>
 						{{ $t('navigation.upcoming') }}
 					</RouterLink>
@@ -47,7 +47,7 @@
 						:to="{ name: 'projects.index'}"
 					>
 						<span class="menu-item-icon icon">
-							<Icon icon="layer-group" />
+							<FolderKanban />
 						</span>
 						{{ $t('project.projects') }}
 					</RouterLink>
@@ -58,7 +58,7 @@
 						:to="{ name: 'labels.index'}"
 					>
 						<span class="menu-item-icon icon">
-							<Icon icon="tags" />
+							<Tag />
 						</span>
 						{{ $t('label.title') }}
 					</RouterLink>
@@ -69,7 +69,7 @@
 						:to="{ name: 'teams.index'}"
 					>
 						<span class="menu-item-icon icon">
-							<Icon icon="users" />
+							<Users />
 						</span>
 						{{ $t('team.title') }}
 					</RouterLink>
@@ -77,7 +77,7 @@
 				<li v-if="timeTrackingEnabled">
 					<RouterLink :to="{ name: 'time-tracking'}">
 						<span class="menu-item-icon icon">
-							<Icon :icon="['far', 'clock']" />
+							<Clock />
 						</span>
 						{{ $t('timeTracking.title') }}
 					</RouterLink>
@@ -118,6 +118,17 @@
 				class="menu"
 				:aria-label="$t('project.projects')"
 			>
+				<div class="menu-section-heading">
+					<span>{{ $t('project.projects') }}</span>
+					<RouterLink
+						v-tooltip="$t('project.create.header')"
+						:to="{name: 'project.create'}"
+						:aria-label="$t('project.create.header')"
+						class="menu-section-action"
+					>
+						<Plus />
+					</RouterLink>
+				</div>
 				<ProjectsNavigation
 					:model-value="projects"
 					:can-edit-order="true"
@@ -142,6 +153,7 @@
 
 <script setup lang="ts">
 import {computed} from 'vue'
+import {CalendarDays, Clock, FolderKanban, LayoutDashboard, Plus, Tag, Users} from '@lucide/vue'
 
 import {SHORTCUTS} from '@/constants/shortcuts'
 import PoweredByLink from '@/components/home/PoweredByLink.vue'
@@ -244,16 +256,47 @@ const savedFilterProjects = computed(() => projectList.savedFilterProjects)
 
 	.list-menu-link,
 	li > a {
-		padding-inline-start: 2rem;
-		display: inline-block;
-
-		.icon {
-			padding-block-end: .25rem;
-		}
+		padding-inline-start: .75rem;
+		gap: .75rem;
 	}
 }
 
 .menu + .menu {
 	padding-block-start: math.div($navbar-padding, 2);
+}
+
+// Jira-style section label ("PROJECTS  +")
+.menu-section-heading {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-inline: .5rem;
+	padding-block: .25rem;
+	padding-inline: .75rem .25rem;
+	font-size: .6875rem;
+	font-weight: 700;
+	letter-spacing: .04em;
+	text-transform: uppercase;
+	color: var(--ui-muted-foreground);
+}
+
+.menu-section-action {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	inline-size: 1.5rem;
+	block-size: 1.5rem;
+	border-radius: 4px;
+	color: var(--ui-muted-foreground);
+
+	svg {
+		inline-size: 1rem;
+		block-size: 1rem;
+	}
+
+	&:hover {
+		background: var(--ui-secondary);
+		color: var(--ui-foreground);
+	}
 }
 </style>
