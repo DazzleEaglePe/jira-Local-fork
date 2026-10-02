@@ -90,7 +90,7 @@ export function ForYou() {
         gsap.from("[data-animate=row]", { y: 4, autoAlpha: 0, duration: 0.25, stagger: 0.03, ease: "power1.out" })
       })
     },
-    { dependencies: [projects.isSuccess, tasks.isSuccess], scope: root }
+    { dependencies: [projects.isSuccess, tasks.isSuccess], scope: root, revertOnUpdate: true }
   )
 
   return (

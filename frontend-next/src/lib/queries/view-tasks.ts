@@ -1,10 +1,11 @@
 "use client"
 
-import { keepPreviousData, useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { keepPreviousData, useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { patchTasksRead, projectViewTasksList, tasksCreate } from "@/lib/api/generated/sdk.gen"
 import type { Task } from "@/lib/api/generated/types.gen"
 import { taskPatchOps } from "@/lib/task-patch"
+import { rangeFilter, type TimelineRange } from "@/lib/timeline"
 import { boardKeys } from "./board"
 import { taskKeys } from "./tasks"
 
@@ -64,5 +65,39 @@ export function useQuickCreateTask(project: number) {
         queryClient.invalidateQueries({ queryKey: taskKeys.all }),
         queryClient.invalidateQueries({ queryKey: boardKeys.all }),
       ]),
+  })
+}
+
+const TIMELINE_PAGE_SIZE = 100
+// Guard against runaway paging on huge projects; the timeline is a read-only overview.
+const TIMELINE_MAX_PAGES = 10
+
+/** Every task of a gantt view whose dates touch the range, sorted like the Vue gantt. */
+export function useTimelineTasks(project: number, view: number, range: TimelineRange, timezone?: string) {
+  return useQuery({
+    queryKey: [...taskKeys.all, "timeline", project, view, range.from.getTime(), range.to.getTime()],
+    queryFn: async ({ signal }) => {
+      const tasks: Task[] = []
+      for (let page = 1; page <= TIMELINE_MAX_PAGES; page++) {
+        const { data } = await projectViewTasksList({
+          path: { project, view },
+          query: {
+            page,
+            per_page: TIMELINE_PAGE_SIZE,
+            filter: rangeFilter(range),
+            filter_timezone: timezone,
+            filter_include_nulls: false,
+            sort_by: ["start_date", "done", "id"],
+            order_by: ["asc", "asc", "desc"],
+          },
+          signal,
+        })
+        tasks.push(...((data.items ?? []) as Task[]))
+        if (page >= (data.total_pages ?? 1)) break
+      }
+      return tasks
+    },
+    placeholderData: keepPreviousData,
+    enabled: project !== 0 && view > 0,
   })
 }

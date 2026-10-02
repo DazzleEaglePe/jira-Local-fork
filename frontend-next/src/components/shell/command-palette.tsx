@@ -2,7 +2,7 @@
 
 import { useDeferredValue, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { CircleUser, FolderPlus, Orbit, Tag, Users } from "lucide-react"
+import { CircleUser, FolderPlus, Orbit, Settings, Tag, Users } from "lucide-react"
 
 import { TaskKey } from "@/components/task/task-key"
 import { useTaskSearch } from "@/lib/queries/tasks"
@@ -83,6 +83,9 @@ export function CommandPalette() {
           </CommandItem>
           <CommandItem onSelect={() => run(() => router.push("/teams"))}>
             <Users /> Equipos
+          </CommandItem>
+          <CommandItem onSelect={() => run(() => router.push("/settings"))}>
+            <Settings /> Ajustes personales
           </CommandItem>
         </CommandGroup>
         {activeProjects.length > 0 && (

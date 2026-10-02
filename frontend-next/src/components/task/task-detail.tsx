@@ -151,7 +151,7 @@ export function TaskDetail({ taskId, onClose }: { taskId: number; onClose?: () =
         gsap.from("[data-animate]", { y: 8, autoAlpha: 0, duration: 0.3, stagger: 0.05, ease: "power2.out" })
       })
     },
-    { dependencies: [Boolean(task)], scope: root }
+    { dependencies: [Boolean(task)], scope: root, revertOnUpdate: true }
   )
 
   async function copyLink() {

@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm build",
-    "sync:api": "node scripts/sync-api-client.mjs"
+    "sync:api": "node scripts/sync-api-client.mjs",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -45,6 +46,7 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@playwright/test": "1.63.0",
     "@tailwindcss/postcss": "^4",
     "@tanstack/react-query-devtools": "^5.104.0",
     "@testing-library/dom": "^10.4.2",

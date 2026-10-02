@@ -28,7 +28,7 @@ Leyenda: ✅ migrado · 🟡 parcial · ⬜ pendiente · ➖ fuera de alcance (q
 | "Para ti" (resumen) | ✅ | proyectos recientes + trabajo pendiente |
 | Directorio de proyectos | ✅ | |
 | Crear proyecto | ✅ | nombre + color |
-| Notificaciones | ⬜ | sprint 7 |
+| Notificaciones | ✅ | 7 · campana con contador, "Solo no leídas", marcar leídas; sondeo cada 10 s (sin websocket) |
 
 ## Proyectos y tareas
 
@@ -40,23 +40,31 @@ Leyenda: ✅ migrado · 🟡 parcial · ⬜ pendiente · ➖ fuera de alcance (q
 | Límite WIP visible / columna Hecho ✓ | ✅ | 4 |
 | Buscar en el tablero | ✅ | 4 · filtro local por título (arrastre desactivado mientras filtras) |
 | Crear / renombrar / eliminar columnas, límite WIP | ✅ | 6 |
-| Filtros avanzados del tablero (responsable, etiqueta) | ⬜ | 7 |
+| Filtros del tablero (responsable, "Sin asignar", etiqueta) | ✅ | 7 · avatares estilo Jira; O dentro de un grupo, Y entre grupos |
 | Detalle de tarea (modal + página) | ✅ | 5 · ruta interceptada `@modal/(.)tasks/[id]`; enlace directo abre la página |
 | Editar título, descripción, prioridad, fechas, progreso | ✅ | 5 · JSON Patch como Vue, actualización optimista |
 | Estado (columna) y marcar como hecha | ✅ | 5 |
 | Etiquetas (asignar, crear) y responsables (buscar, "Asignarme a mí") | ✅ | 5 |
 | Comentarios (crear, eliminar propios) | ✅ | 5 · Tiptap + DOMPurify |
 | Favorito, copiar enlace, eliminar tarea | ✅ | 5 |
-| Adjuntos | ⬜ | 7 |
-| Tareas relacionadas / subtareas | ⬜ | 7 |
-| Recordatorios y repetición | ⬜ | 7 |
+| Adjuntos | ⬜ | backlog |
+| Tareas relacionadas / subtareas | ⬜ | backlog |
+| Recordatorios y repetición | ⬜ | backlog |
 | Seguimiento de tiempo | ➖ | función Pro de Vikunja |
 | Vista Lista / Tabla | ✅ | 6 · TanStack Table v9, orden en servidor, columnas visibles, crear tarea, "Cargar más" |
-| Vista Gantt | ⬜ | 7 |
-| Ajustes de proyecto (editar, archivar, compartir) | ⬜ | 7 |
+| Vista Cronograma (Gantt) | 🟡 | 7 · solo lectura: barras por fechas, hoy, navegar periodos; arrastrar fechas pendiente |
+| Ajustes de proyecto (editar, archivar, compartir) | ⬜ | backlog |
 | Etiquetas (crear, editar, eliminar) | ✅ | 6 |
 | Equipos (crear, miembros, eliminar) | ✅ | 6 |
-| Filtros guardados (crear/editar) | ⬜ | 7 |
-| Ajustes de usuario | ⬜ | 7 |
+| Filtros guardados (crear/editar) | ⬜ | backlog |
+| Ajustes de usuario | 🟡 | 7 · nombre, proyecto predeterminado, inicio de semana, contraseña; el resto (avatar, TOTP, tokens, CalDAV…) sigue en Vue |
 | Migradores (Trello, Todoist…) | ➖ | quedan en Vue |
 | Panel de administración | ➖ | queda en Vue |
+
+## Calidad
+
+| Check | Estado |
+|---|---|
+| `pnpm check` (typecheck + lint + unit + build) | ✅ |
+| e2e Playwright (`pnpm test:e2e`, Chrome instalado) | ✅ 3 pruebas de humo |
+| Idiomas | 🟡 solo español |

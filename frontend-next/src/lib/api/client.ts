@@ -89,6 +89,7 @@ export function configureApiClient() {
 const ERROR_MESSAGES: Record<number, string> = {
   1011: "Usuario o contraseña incorrectos.",
   1012: "Tu correo aún no está confirmado.",
+  1013: "La nueva contraseña está vacía.",
   1017: "El código de autenticación en dos pasos no es válido.",
   1020: "Esta cuenta está deshabilitada. Revisa tu correo o consulta al administrador.",
   1021: "Esta cuenta se gestiona con un proveedor de autenticación externo.",

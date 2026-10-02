@@ -5,6 +5,7 @@ echo ========================================================
 echo.
 taskkill /F /IM vikunja.exe 2>nul
 taskkill /F /FI "WINDOWTITLE eq Vikunja Modern Trello*" 2>nul
+taskkill /F /FI "WINDOWTITLE eq Jira-Local Next*" 2>nul
 echo.
 echo Todos los servicios de Vikunja han sido detenidos con exito.
 echo.

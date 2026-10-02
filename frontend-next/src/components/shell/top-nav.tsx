@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { PanelLeft, Search } from "lucide-react"
 
+import { NotificationsMenu } from "@/components/notifications/notifications-menu"
 import { Button } from "@/components/ui/button"
 import { Kbd } from "@/components/ui/kbd"
 import { useSidebar } from "@/components/ui/sidebar"
@@ -48,6 +49,7 @@ export function TopNav() {
       </div>
 
       <div className="flex shrink-0 items-center gap-1">
+        <NotificationsMenu />
         <UserMenu />
       </div>
     </header>

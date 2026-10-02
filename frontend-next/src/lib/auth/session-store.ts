@@ -23,6 +23,8 @@ type SessionState = {
   bootstrap: () => Promise<void>
   login: (input: LoginInput) => Promise<void>
   logout: () => Promise<void>
+  /** Re-reads the account after the user changed their own settings. */
+  refreshUser: () => Promise<void>
   /** Called when the API reports the session can't be recovered. */
   expire: () => void
 }
@@ -96,6 +98,10 @@ export const useSession = create<SessionState>((set, get) => ({
     clearToken()
     setJustLoggedOut(true)
     set({ status: "anonymous", user: null })
+  },
+
+  refreshUser: async () => {
+    set({ user: await loadUser() })
   },
 
   expire: () => {

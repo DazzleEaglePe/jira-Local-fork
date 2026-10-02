@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Jira-Local · interfaz Next.js
 
-## Getting Started
+Nueva interfaz de Jira-Local (Vikunja 2.5) con estilo Atlassian Jira, construida con Next.js 16 (App Router) y React 19. Reemplaza de forma gradual a la interfaz Vue de `frontend-src/frontend`, contra la misma API.
 
-First, run the development server:
+Plan, decisiones y estado de los sprints: [`../docs/MIGRACION-NEXT.md`](../docs/MIGRACION-NEXT.md) · paridad con Vue: [`PARIDAD.md`](PARIDAD.md).
+
+## Stack
+
+Next.js 16 · React 19 · TypeScript · Tailwind CSS v4 · shadcn/ui (Radix) con tokens del Atlassian Design System · TanStack Query 5 y TanStack Table 9 · Zustand · dnd-kit · GSAP (`@gsap/react`, respeta "reducir movimiento") · react-hook-form + zod · Tiptap + DOMPurify · date-fns (es) · cmdk · sonner · Vitest + Testing Library · Playwright.
+
+## Uso diario
+
+Desde la raíz del repositorio, `iniciar_jira_next.bat` levanta el backend (si no está activo), compila la interfaz la primera vez y la sirve en `http://localhost:5173` y en la red local. `detener_vikunja.bat` detiene todo. La interfaz Vue sigue disponible con `iniciar_vikunja.bat`.
+
+## Desarrollo
+
+Requiere Node 24 y pnpm, y el backend en `http://127.0.0.1:3456` (`vikunja.exe web`). Para otra URL de backend, define `VIKUNJA_API_URL`.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```bash
+pnpm dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Abre `http://localhost:3000`. `/api/*` se redirige al backend mediante `rewrites` en `next.config.ts`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Script | Qué hace |
+|---|---|
+| `pnpm check` | typecheck + lint + pruebas unitarias + build (obligatorio al cerrar cada cambio) |
+| `pnpm test` | pruebas unitarias (Vitest) |
+| `pnpm test:e2e` | pruebas de humo con Playwright contra la app en `:3000` y el backend |
+| `pnpm sync:api` | copia el cliente OpenAPI generado de la app Vue a `src/lib/api/generated` |
 
-## Learn More
+Las pruebas e2e usan el Chrome instalado (no descargan navegadores) y una cuenta de pruebas local por variables de entorno `E2E_USER` y `E2E_PASSWORD`; sin ellas solo corre la prueba anónima. Para otra URL, `E2E_BASE_URL`.
 
-To learn more about Next.js, take a look at the following resources:
+## Estructura
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/app` — rutas: `(auth)/login`, `(app)/…` (dashboard, proyectos y vistas, tareas, etiquetas, equipos, ajustes) y el modal `@modal/(.)tasks/[id]`.
+- `src/components` — `ui/` (shadcn), `shell/` (barra superior, lateral, `Ctrl K`), `board/`, `task/`, `views/` (Lista/Tabla, Cronograma), `notifications/`, `settings/`…
+- `src/lib` — lógica pura con pruebas (`board`, `board-filter`, `timeline`, `notifications`, `task-patch`…), `queries/` (TanStack Query), `auth/` y `api/`.

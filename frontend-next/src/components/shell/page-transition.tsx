@@ -16,7 +16,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
         gsap.fromTo(ref.current, { autoAlpha: 0, y: 6 }, { autoAlpha: 1, y: 0, duration: 0.25, ease: "power2.out" })
       })
     },
-    { dependencies: [pathname], scope: ref }
+    { dependencies: [pathname], scope: ref, revertOnUpdate: true }
   )
 
   return (

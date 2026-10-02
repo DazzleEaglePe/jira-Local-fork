@@ -21,6 +21,7 @@ import { toast } from "sonner"
 
 import { getErrorMessage } from "@/lib/api/client"
 import { findTaskLocation, moveTask, planDrop, type BoardBucket } from "@/lib/board"
+import { visibleTaskIds as visibleTaskIdsFor, type BoardFilter } from "@/lib/board-filter"
 import { gsap, MOTION_OK } from "@/lib/gsap"
 import { boardKeys, usePersistMove } from "@/lib/queries/board"
 import { BoardCardContent } from "./board-card"
@@ -78,7 +79,7 @@ export function Board({
   project: number
   view: number
   doneBucketId?: number
-  filter: string
+  filter: BoardFilter
 }) {
   const queryClient = useQueryClient()
   const persistMove = usePersistMove()
@@ -88,10 +89,7 @@ export function Board({
   const originBucket = useRef<number | null>(null)
   const columns = draft ?? buckets
 
-  const needle = filter.trim().toLowerCase()
-  const visibleTaskIds = needle
-    ? new Set(columns.flatMap((bucket) => bucket.tasks).filter((task) => task.title?.toLowerCase().includes(needle)).map((task) => task.id))
-    : undefined
+  const visibleTaskIds = visibleTaskIdsFor(columns, filter)
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),

@@ -1,6 +1,7 @@
 "use client"
 
-import { LogOut, Monitor, Moon, Sun } from "lucide-react"
+import Link from "next/link"
+import { LogOut, Monitor, Moon, Settings, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -46,6 +47,12 @@ export function UserMenu() {
           <span className="font-semibold">{displayName}</span>
           {user?.email && <span className="text-xs font-normal text-muted-foreground">{user.email}</span>}
         </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href="/settings">
+            <Settings /> Ajustes personales
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuLabel className="text-xs text-muted-foreground">Tema</DropdownMenuLabel>
         <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>

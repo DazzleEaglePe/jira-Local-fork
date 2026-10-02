@@ -88,3 +88,25 @@ Cada sprint termina con **checks obligatorios**: `pnpm check` (typecheck + lint 
 ## 4. Checklist de paridad (se actualiza por sprint)
 
 Ver `frontend-next/PARIDAD.md`.
+
+## 5. Estado al cierre del Sprint 7
+
+Los 8 sprints están cerrados, cada uno con `pnpm check` en verde y verificación contra el backend real.
+
+| Sprint | Resultado |
+|---|---|
+| 0–1 | Plan + fundaciones (Next 16, Tailwind v4, shadcn, tokens Atlassian, proxy `/api`) |
+| 2 | Login, sesión persistente, renovación de token |
+| 3 | Shell estilo Jira, `Ctrl K`, "Para ti", proyectos |
+| 4 | Tablero Kanban con dnd-kit (mouse y teclado) |
+| 5 | Detalle de tarea (modal interceptado + página) |
+| 6 | Lista/Tabla (TanStack Table), columnas, etiquetas, equipos |
+| 7 | Notificaciones, ajustes personales, filtros del tablero, Cronograma, e2e Playwright, lanzador `iniciar_jira_next.bat` |
+
+Cambios respecto al plan del Sprint 7:
+
+- **Cutover**: en lugar de que `server.mjs` sirva Next, se agregó `iniciar_jira_next.bat`, que usa `next start -H 0.0.0.0 -p 5173` (mismo puerto y misma URL de red que antes). El proxy de `/api` ya lo hace Next con `rewrites`. `iniciar_vikunja.bat` + `server.mjs` siguen sirviendo la interfaz Vue, por si hay que volver atrás.
+- **i18n es/en**: no se hizo; la interfaz nueva está solo en español (la de Vue conserva todos los idiomas). Si se necesita inglés, el siguiente paso es `next-intl` extrayendo los textos.
+- **Cronograma**: es de solo lectura (barras por fechas, navegación por periodos). Arrastrar para cambiar fechas queda pendiente.
+
+Backlog para después del cutover: adjuntos, subtareas/relaciones, recordatorios, ajustes de proyecto (editar, archivar, compartir), filtros guardados, registro/recuperar contraseña y TOTP. Mientras tanto, esas funciones se usan desde la interfaz Vue.

@@ -2,16 +2,18 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ChartGantt, LayoutGrid, List, Search, SquareKanban, Table, type LucideIcon } from "lucide-react"
+import { ChartGantt, LayoutGrid, List, SquareKanban, Table, type LucideIcon } from "lucide-react"
 
 import { Board } from "@/components/board/board"
+import { BoardFilters } from "@/components/board/board-filters"
 import { TaskTable } from "@/components/views/task-table"
+import { TimelineView } from "@/components/views/timeline-view"
 import { PageHeader } from "@/components/shell/page-header"
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
-import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useDocumentTitle } from "@/hooks/use-document-title"
 import type { ProjectView } from "@/lib/api/generated/types.gen"
+import { EMPTY_BOARD_FILTER, type BoardFilter } from "@/lib/board-filter"
 import { getProjectAncestors, projectColor, projectTitle } from "@/lib/projects"
 import { useBoard } from "@/lib/queries/board"
 import { useProject, useProjects } from "@/lib/queries/projects"
@@ -71,7 +73,7 @@ export function ProjectViewScreen({ projectId, viewId }: { projectId: number; vi
   const view = views.find((item) => item.id === viewId)
   const isKanban = view?.view_kind === "kanban"
   const board = useBoard(projectId, isKanban ? viewId : 0)
-  const [filter, setFilter] = useState("")
+  const [filter, setFilter] = useState<BoardFilter>(EMPTY_BOARD_FILTER)
 
   const title = project ? projectTitle(project) : "Cargando…"
   useDocumentTitle(project ? `${view ? viewLabel(view) : "Proyecto"} · ${title}` : null)
@@ -99,21 +101,7 @@ export function ProjectViewScreen({ projectId, viewId }: { projectId: number; vi
         {views.length > 0 && <ViewTabs projectId={projectId} views={views} activeId={viewId} />}
       </PageHeader>
 
-      {isKanban && (
-        <div className="flex items-center gap-2 px-6 pb-4">
-          <div className="relative w-56">
-            <Search className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              value={filter}
-              onChange={(event) => setFilter(event.target.value)}
-              placeholder="Buscar en el tablero"
-              aria-label="Buscar en el tablero"
-              className="h-8 pl-8"
-            />
-          </div>
-          {filter && <span className="text-xs text-muted-foreground">Arrastrar está desactivado mientras filtras.</span>}
-        </div>
-      )}
+      {isKanban && board.data && <BoardFilters buckets={board.data} value={filter} onChange={setFilter} />}
 
       <div className="min-h-0 flex-1">
         {!project || (isKanban && board.isPending) ? (
@@ -124,15 +112,17 @@ export function ProjectViewScreen({ projectId, viewId }: { projectId: number; vi
           <div className="h-full overflow-y-auto">
             <TaskTable project={projectId} view={viewId} mode={view.view_kind} />
           </div>
+        ) : view?.view_kind === "gantt" ? (
+          <TimelineView project={projectId} view={viewId} />
         ) : (
           <Empty className="mx-6 border">
             <EmptyHeader>
               <EmptyMedia variant="icon">
                 <LayoutGrid />
               </EmptyMedia>
-              <EmptyTitle>Vista {view ? viewLabel(view) : ""} en migración</EmptyTitle>
+              <EmptyTitle>Vista no disponible</EmptyTitle>
               <EmptyDescription>
-                El cronograma llega en el sprint 7. Mientras tanto usa las vistas Tablero, Lista o Tabla.
+                Esta vista aún no está disponible en la nueva interfaz. Usa Tablero, Lista, Tabla o Cronograma.
               </EmptyDescription>
             </EmptyHeader>
           </Empty>
