@@ -47,9 +47,9 @@ function getSentryConfig(env: Record<string, string>): SentryVitePluginOptions {
 		telemetry: false,
 
 		// sourcemaps: {
-			// assets: [], // TODO
-			// deleteFilesAfterUpload: [], // TODO define glob
-			// rewriteSources // might need that instead of `urlPrefix`
+		// assets: [], // TODO
+		// deleteFilesAfterUpload: [], // TODO define glob
+		// rewriteSources // might need that instead of `urlPrefix`
 		// },
 
 		release: {
@@ -136,7 +136,7 @@ function getBuildConfig(env: Record<string, string>) {
 					postcssPresetEnv({
 						features: {
 							'logical-properties-and-values': false,
-						}
+						},
 					}),
 				],
 			},
@@ -289,6 +289,9 @@ function getServeConfig(env: Record<string, string>) {
 					secure: false,
 					// Strips prefix for the backend
 					rewrite: (path: string) => path.replace(new RegExp(`^${base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`), ''),
+					// Older backends scope the refresh cookie to /api/v1 while the frontend
+					// refreshes via /api/v2; widen it so the browser sends it on both.
+					cookiePathRewrite: {'*': proxyPath},
 				},
 			}}),
 		},

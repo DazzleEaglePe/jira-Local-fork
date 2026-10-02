@@ -36,6 +36,12 @@ const server = http.createServer((req, res) => {
       method: req.method,
       headers: proxyHeaders
     }, (proxyRes) => {
+      // The v2.5 backend scopes the refresh cookie to /api/v1/..., but the frontend
+      // refreshes via /api/v2/...; widen the path so the session survives reloads.
+      const setCookie = proxyRes.headers['set-cookie'];
+      if (setCookie) {
+        proxyRes.headers['set-cookie'] = setCookie.map((cookie) => cookie.replace(/Path=\/api\/[^;]*/i, 'Path=/api'));
+      }
       res.writeHead(proxyRes.statusCode, proxyRes.headers);
       proxyRes.pipe(res, { end: true });
     });
