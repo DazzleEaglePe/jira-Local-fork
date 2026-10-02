@@ -23,7 +23,7 @@ Leyenda: ✅ migrado · 🟡 parcial · ⬜ pendiente · ➖ fuera de alcance (q
 |---|---|---|
 | Barra superior estilo Jira (buscador + Crear) | ✅ | |
 | Barra lateral con árbol de proyectos | ✅ | favoritos, recientes, filtros guardados |
-| Paleta `Ctrl K` | 🟡 | navegación y proyectos; búsqueda de tareas en sprint 6 |
+| Paleta `Ctrl K` | ✅ | tareas (búsqueda en servidor), proyectos, páginas y acciones |
 | Tema claro/oscuro/sistema | ✅ | tokens Atlassian 2025 |
 | "Para ti" (resumen) | ✅ | proyectos recientes + trabajo pendiente |
 | Directorio de proyectos | ✅ | |
@@ -39,8 +39,8 @@ Leyenda: ✅ migrado · 🟡 parcial · ⬜ pendiente · ➖ fuera de alcance (q
 | "Mostrar más" en columnas con más de 25 tareas | ✅ | 4 |
 | Límite WIP visible / columna Hecho ✓ | ✅ | 4 |
 | Buscar en el tablero | ✅ | 4 · filtro local por título (arrastre desactivado mientras filtras) |
-| Crear / renombrar / eliminar columnas | ⬜ | 6 |
-| Filtros avanzados del tablero (responsable, etiqueta) | ⬜ | 6 |
+| Crear / renombrar / eliminar columnas, límite WIP | ✅ | 6 |
+| Filtros avanzados del tablero (responsable, etiqueta) | ⬜ | 7 |
 | Detalle de tarea (modal + página) | ✅ | 5 · ruta interceptada `@modal/(.)tasks/[id]`; enlace directo abre la página |
 | Editar título, descripción, prioridad, fechas, progreso | ✅ | 5 · JSON Patch como Vue, actualización optimista |
 | Estado (columna) y marcar como hecha | ✅ | 5 |
@@ -51,10 +51,11 @@ Leyenda: ✅ migrado · 🟡 parcial · ⬜ pendiente · ➖ fuera de alcance (q
 | Tareas relacionadas / subtareas | ⬜ | 7 |
 | Recordatorios y repetición | ⬜ | 7 |
 | Seguimiento de tiempo | ➖ | función Pro de Vikunja |
-| Vista Lista / Tabla | ⬜ | 6 |
+| Vista Lista / Tabla | ✅ | 6 · TanStack Table v9, orden en servidor, columnas visibles, crear tarea, "Cargar más" |
 | Vista Gantt | ⬜ | 7 |
 | Ajustes de proyecto (editar, archivar, compartir) | ⬜ | 7 |
-| Etiquetas, equipos | ⬜ | 6 |
+| Etiquetas (crear, editar, eliminar) | ✅ | 6 |
+| Equipos (crear, miembros, eliminar) | ✅ | 6 |
 | Filtros guardados (crear/editar) | ⬜ | 7 |
 | Ajustes de usuario | ⬜ | 7 |
 | Migradores (Trello, Todoist…) | ➖ | quedan en Vue |

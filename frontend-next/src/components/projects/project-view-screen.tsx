@@ -5,6 +5,7 @@ import Link from "next/link"
 import { ChartGantt, LayoutGrid, List, Search, SquareKanban, Table, type LucideIcon } from "lucide-react"
 
 import { Board } from "@/components/board/board"
+import { TaskTable } from "@/components/views/task-table"
 import { PageHeader } from "@/components/shell/page-header"
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 import { Input } from "@/components/ui/input"
@@ -119,6 +120,10 @@ export function ProjectViewScreen({ projectId, viewId }: { projectId: number; vi
           <BoardSkeleton />
         ) : isKanban && board.data ? (
           <Board buckets={board.data} project={projectId} view={viewId} doneBucketId={view?.done_bucket_id} filter={filter} />
+        ) : view?.view_kind === "list" || view?.view_kind === "table" ? (
+          <div className="h-full overflow-y-auto">
+            <TaskTable project={projectId} view={viewId} mode={view.view_kind} />
+          </div>
         ) : (
           <Empty className="mx-6 border">
             <EmptyHeader>
@@ -127,7 +132,7 @@ export function ProjectViewScreen({ projectId, viewId }: { projectId: number; vi
               </EmptyMedia>
               <EmptyTitle>Vista {view ? viewLabel(view) : ""} en migración</EmptyTitle>
               <EmptyDescription>
-                Las vistas Lista, Tabla y Cronograma llegan en los próximos sprints. Mientras tanto usa la vista Tablero.
+                El cronograma llega en el sprint 7. Mientras tanto usa las vistas Tablero, Lista o Tabla.
               </EmptyDescription>
             </EmptyHeader>
           </Empty>

@@ -1,8 +1,12 @@
 "use client"
 
-import { useEffect } from "react"
+import { useDeferredValue, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { CircleUser, FolderPlus, Orbit } from "lucide-react"
+import { CircleUser, FolderPlus, Orbit, Tag, Users } from "lucide-react"
+
+import { TaskKey } from "@/components/task/task-key"
+import { useTaskSearch } from "@/lib/queries/tasks"
+import { getTaskIdentifier } from "@/lib/tasks"
 
 import {
   CommandDialog,
@@ -24,6 +28,9 @@ export function CommandPalette() {
   const setOpen = useUi((state) => state.setCommandOpen)
   const setCreateProjectOpen = useUi((state) => state.setCreateProjectOpen)
   const { data: projects } = useProjects()
+  const [search, setSearch] = useState("")
+  const deferredSearch = useDeferredValue(search)
+  const tasks = useTaskSearch(open ? deferredSearch : "")
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -38,6 +45,7 @@ export function CommandPalette() {
 
   function run(action: () => void) {
     setOpen(false)
+    setSearch("")
     action()
   }
 
@@ -45,15 +53,36 @@ export function CommandPalette() {
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen} title="Buscar" description="Busca proyectos y acciones">
-      <CommandInput placeholder="Buscar proyectos o acciones…" />
+      <CommandInput placeholder="Buscar tareas, proyectos o acciones…" value={search} onValueChange={setSearch} />
       <CommandList>
-        <CommandEmpty>Sin resultados.</CommandEmpty>
+        <CommandEmpty>{tasks.isFetching ? "Buscando…" : "Sin resultados."}</CommandEmpty>
+        {(tasks.data?.length ?? 0) > 0 && (
+          <CommandGroup heading="Tareas">
+            {tasks.data!.map((task) => (
+              <CommandItem
+                key={task.id}
+                // include the query so cmdk's local filter keeps server matches
+                value={`${deferredSearch} ${getTaskIdentifier(task)} ${task.title} task-${task.id}`}
+                onSelect={() => run(() => router.push(`/tasks/${task.id}`))}
+              >
+                <TaskKey task={task} className="w-14 shrink-0" />
+                <span className="truncate">{task.title}</span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        )}
         <CommandGroup heading="Ir a">
           <CommandItem onSelect={() => run(() => router.push("/dashboard"))}>
             <CircleUser /> Para ti
           </CommandItem>
           <CommandItem onSelect={() => run(() => router.push("/projects"))}>
             <Orbit /> Todos los proyectos
+          </CommandItem>
+          <CommandItem onSelect={() => run(() => router.push("/labels"))}>
+            <Tag /> Etiquetas
+          </CommandItem>
+          <CommandItem onSelect={() => run(() => router.push("/teams"))}>
+            <Users /> Equipos
           </CommandItem>
         </CommandGroup>
         {activeProjects.length > 0 && (

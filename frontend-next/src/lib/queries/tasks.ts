@@ -11,6 +11,20 @@ export const taskKeys = {
   detail: (id: number) => ["tasks", id] as const,
 }
 
+/** Full-text task search for the command palette (2+ characters). */
+export function useTaskSearch(query: string) {
+  const q = query.trim()
+  return useQuery({
+    queryKey: ["tasks", "search", q],
+    queryFn: async ({ signal }): Promise<Task[]> => {
+      const { data } = await tasksList({ query: { q, per_page: 8, page: 1 }, signal })
+      return data.items ?? []
+    },
+    enabled: q.length >= 2,
+    staleTime: 15_000,
+  })
+}
+
 /** Undone tasks across all projects, earliest due first ("Para ti"). */
 export function useOpenTasks() {
   return useQuery({

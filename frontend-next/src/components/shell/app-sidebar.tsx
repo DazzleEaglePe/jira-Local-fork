@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { ChevronRight, CircleUser, Filter, Orbit, Plus, Star } from "lucide-react"
+import { ChevronRight, CircleUser, Filter, Orbit, Plus, Star, Tag, Users } from "lucide-react"
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import {
@@ -147,6 +147,25 @@ export function AppSidebar() {
                 : tree.map((project) => <ProjectItem key={project.id} project={project} pathname={pathname} />)}
             </SidebarMenu>
           </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={pathname === "/labels"} className={NAV_ITEM}>
+                <Link href="/labels">
+                  <Tag /> Etiquetas
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={pathname === "/teams"} className={NAV_ITEM}>
+                <Link href="/teams">
+                  <Users /> Equipos
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
         </SidebarGroup>
 
         {savedFilters.length > 0 && (

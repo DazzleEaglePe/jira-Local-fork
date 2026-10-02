@@ -10,6 +10,7 @@ import { isOverLimit, type BoardBucket } from "@/lib/board"
 import { TASKS_PER_BUCKET, useLoadMoreTasks } from "@/lib/queries/board"
 import { cn } from "@/lib/utils"
 import { BoardCard, taskDndId } from "./board-card"
+import { ColumnMenu } from "./column-menu"
 import { CreateTaskInline } from "./create-task-inline"
 
 export const bucketDndId = (bucketId: number) => `bucket:${bucketId}`
@@ -21,12 +22,15 @@ export function BoardColumn({
   isDone,
   dragDisabled,
   visibleTaskIds,
+  canDelete,
 }: {
   bucket: BoardBucket
   project: number
   view: number
   isDone: boolean
   dragDisabled: boolean
+  /** The last remaining column can't be deleted */
+  canDelete: boolean
   /** When the board is filtered, only these tasks are shown */
   visibleTaskIds?: Set<number>
 }) {
@@ -50,6 +54,7 @@ export function BoardColumn({
           {bucket.limit > 0 ? `${bucket.count} / ${bucket.limit}` : bucket.count}
         </span>
         {isDone && <Check className="size-4 text-success" aria-label="Columna de tareas hechas" />}
+        <ColumnMenu bucket={bucket} project={project} view={view} canDelete={canDelete} />
       </header>
 
       <SortableContext items={tasks.map((task) => taskDndId(task.id))} strategy={verticalListSortingStrategy}>

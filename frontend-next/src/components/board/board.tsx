@@ -25,6 +25,7 @@ import { gsap, MOTION_OK } from "@/lib/gsap"
 import { boardKeys, usePersistMove } from "@/lib/queries/board"
 import { BoardCardContent } from "./board-card"
 import { BoardColumn } from "./board-column"
+import { CreateColumn } from "./create-column"
 
 type DndData = { type: "task" | "bucket"; bucketId: number }
 
@@ -191,8 +192,10 @@ export function Board({
             isDone={bucket.id === doneBucketId}
             dragDisabled={Boolean(visibleTaskIds)}
             visibleTaskIds={visibleTaskIds}
+            canDelete={columns.length > 1}
           />
         ))}
+        <CreateColumn project={project} view={view} />
       </div>
       <DragOverlay>
         {activeTask && (

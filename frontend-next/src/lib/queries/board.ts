@@ -3,6 +3,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import {
+  bucketsCreate,
+  bucketsDelete,
+  bucketsUpdate,
   projectViewBucketsTasksList,
   projectViewTasksList,
   taskBucketUpdate,
@@ -78,6 +81,49 @@ export function useCreateTaskInBucket(project: number, view: number) {
       Promise.all([
         queryClient.invalidateQueries({ queryKey: boardKeys.view(project, view) }),
         queryClient.invalidateQueries({ queryKey: taskKeys.all }),
+      ]),
+  })
+}
+
+export function useCreateBucket(project: number, view: number) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (title: string) => {
+      await bucketsCreate({ path: { project, view }, body: { title } })
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: boardKeys.view(project, view) }),
+  })
+}
+
+/** Bucket update is a PUT: title, limit and position must always be sent or they reset. */
+export function useUpdateBucket(project: number, view: number) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (bucket: Pick<BoardBucket, "id" | "title" | "limit" | "position">) => {
+      await bucketsUpdate({
+        path: { project, view, bucket: bucket.id },
+        body: { title: bucket.title, limit: bucket.limit, position: bucket.position },
+      })
+    },
+    onMutate: (bucket) =>
+      queryClient.setQueryData<BoardBucket[]>(boardKeys.view(project, view), (buckets) =>
+        buckets?.map((item) => (item.id === bucket.id ? { ...item, ...bucket } : item))
+      ),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: boardKeys.view(project, view) }),
+  })
+}
+
+export function useDeleteBucket(project: number, view: number) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (bucketId: number) => {
+      await bucketsDelete({ path: { project, view, bucket: bucketId } })
+    },
+    onSettled: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: boardKeys.view(project, view) }),
+        // the backend may clear the view's default/done bucket
+        queryClient.invalidateQueries({ queryKey: ["projects"] }),
       ]),
   })
 }
