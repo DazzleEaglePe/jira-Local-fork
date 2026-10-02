@@ -7,11 +7,17 @@
 		:aria-expanded="menuActive"
 		@click="baseStore.toggleMenu()"
 		@shortkey="() => baseStore.toggleMenu()"
-	/>
+	>
+		<component
+			:is="menuActive ? PanelLeftClose : PanelLeftOpen"
+			class="menu-show-icon"
+		/>
+	</BaseButton>
 </template>
 
 <script setup lang="ts">
 import {computed} from 'vue'
+import {PanelLeftClose, PanelLeftOpen} from '@lucide/vue'
 
 import {SHORTCUTS} from '@/constants/shortcuts'
 import {useBaseStore} from '@/stores/base'
@@ -23,55 +29,27 @@ const menuActive = computed(() => baseStore.menuActive)
 </script>
 
 <style lang="scss" scoped>
-$line-width: 2rem;
-$size: $line-width + 1rem;
-
+// Jira-style sidebar toggle: a square icon button
 .menu-show-button {
-	min-block-size: $size;
-	inline-size: $size;
-
-	position: relative;
-
-	$transform-x: translateX(-50%);
-
-	&::before,
-	&::after {
-		content: '';
-		display: block;
-		position: absolute;
-		block-size: 3px;
-		inline-size: $line-width;
-		inset-inline-start: 50%;
-		transform: $transform-x;
-		background-color: var(--grey-700);
-		border-radius: 2px;
-		transition: all $transition;
-	}
-
-	&::before {
-		inset-block-start: 50%;
-		transform: $transform-x translateY(-0.4rem)
-	}
-
-	&::after {
-		inset-block-end: 50%;
-		transform: $transform-x translateY(0.4rem)
-	}
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	align-self: center;
+	inline-size: 2rem;
+	block-size: 2rem;
+	border-radius: 4px;
+	color: var(--ui-muted-foreground);
+	transition: background-color $transition, color $transition;
 
 	&:hover,
-	&:focus {
-		&::before,
-		&::after {
-			background-color: var(--text-strong);
-		}
-
-		&::before {
-			transform: $transform-x translateY(-0.5rem);
-		}
-
-		&::after {
-			transform: $transform-x translateY(0.5rem)
-		}
+	&:focus-visible {
+		background: var(--ui-secondary);
+		color: var(--ui-foreground);
 	}
+}
+
+.menu-show-icon {
+	inline-size: 1.125rem;
+	block-size: 1.125rem;
 }
 </style>

@@ -6,7 +6,34 @@
 			'is-archived': currentProject.is_archived,
 		}"
 	>
-		<!-- Jira-style page header: project title above the view tabs -->
+		<!-- Jira-style page header: breadcrumb, then project title with its actions -->
+		<Breadcrumb
+			:aria-label="$t('navigation.breadcrumb')"
+			class="project-page-breadcrumb d-print-none"
+		>
+			<BreadcrumbList>
+				<BreadcrumbItem>
+					<BreadcrumbLink as-child>
+						<RouterLink :to="{name: 'projects.index'}">
+							{{ $t('project.projects') }}
+						</RouterLink>
+					</BreadcrumbLink>
+				</BreadcrumbItem>
+				<template
+					v-for="ancestor in projectAncestors"
+					:key="ancestor.id"
+				>
+					<BreadcrumbSeparator />
+					<BreadcrumbItem>
+						<BreadcrumbLink as-child>
+							<RouterLink :to="{name: 'project.index', params: {projectId: ancestor.id}}">
+								{{ getProjectTitle(ancestor) }}
+							</RouterLink>
+						</BreadcrumbLink>
+					</BreadcrumbItem>
+				</template>
+			</BreadcrumbList>
+		</Breadcrumb>
 		<div class="project-page-header">
 			<span
 				v-if="projectColor"
@@ -14,8 +41,40 @@
 				:style="{'background-color': projectColor}"
 			/>
 			<h1 class="project-page-title">
-				{{ getProjectTitle(currentProject) }}
+				{{ currentProject.title === '' ? $t('misc.loading') : getProjectTitle(currentProject) }}
 			</h1>
+			<Button
+				v-if="currentProject.id && !isEditorContentEmpty(currentProject.description)"
+				v-tooltip="$t('project.description')"
+				variant="ghost"
+				size="icon-sm"
+				class="d-print-none"
+				as-child
+			>
+				<RouterLink
+					:to="{name: 'project.info', params: {projectId: currentProject.id}}"
+					:aria-label="$t('project.description')"
+				>
+					<Info />
+				</RouterLink>
+			</Button>
+			<ProjectSettingsDropdown
+				v-if="canWriteCurrentProject && currentProject.id !== -1"
+				class="d-print-none"
+				:project="currentProject"
+			>
+				<template #trigger="{toggleOpen, open}">
+					<Button
+						variant="ghost"
+						size="icon-sm"
+						:aria-label="$t('project.openSettingsMenu')"
+						:aria-expanded="open"
+						@click="toggleOpen"
+					>
+						<Ellipsis />
+					</Button>
+				</template>
+			</ProjectSettingsDropdown>
 		</div>
 
 		<div
@@ -108,9 +167,15 @@ import Icon from '@/components/misc/Icon'
 import Message from '@/components/misc/Message.vue'
 import CustomTransition from '@/components/misc/CustomTransition.vue'
 
-import {ChartGantt, LayoutGrid, List, SquareKanban, Table} from '@lucide/vue'
+import {ChartGantt, Ellipsis, Info, LayoutGrid, List, SquareKanban, Table} from '@lucide/vue'
 
+import ProjectSettingsDropdown from '@/components/project/ProjectSettingsDropdown.vue'
+import {Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator} from '@/components/ui/breadcrumb'
+import {Button} from '@/components/ui/button'
+import {PERMISSIONS} from '@/constants/permissions'
+import {useProjects} from '@/composables/useProjects'
 import {getProjectTitle} from '@/helpers/getProjectTitle'
+import {isEditorContentEmpty} from '@/helpers/editorContentEmpty'
 import {getHexColor} from '@/helpers/task'
 import {useTitle} from '@/composables/useTitle'
 
@@ -186,6 +251,17 @@ function getViewTitle(view: ProjectView) {
 
 const projectColor = computed(() => getHexColor(currentProject.value.hex_color))
 
+const projectList = useProjects()
+// Parents of the current project, shown in the breadcrumb above its title
+const projectAncestors = computed(() =>
+	currentProject.value.id ? projectList.getAncestors(currentProject.value).slice(0, -1) : [],
+)
+const canWriteCurrentProject = computed(() =>
+	currentProject.value.max_permission !== null &&
+	currentProject.value.max_permission !== undefined &&
+	currentProject.value.max_permission > PERMISSIONS.READ,
+)
+
 const VIEW_ICONS = {list: List, gantt: ChartGantt, table: Table, kanban: SquareKanban}
 
 function getViewIcon(view: ProjectView) {
@@ -204,6 +280,11 @@ function getViewRoute(view: ProjectView) {
 </script>
 
 <style lang="scss" scoped>
+// Small "Projects / parent" trail above the title (Jira's "Espacio" line)
+.project-page-breadcrumb {
+	margin-block-end: .25rem;
+}
+
 .project-page-header {
 	display: flex;
 	align-items: center;

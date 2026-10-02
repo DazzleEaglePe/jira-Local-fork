@@ -160,8 +160,8 @@ watchEffect(() => {
 }, {flush: 'post'})
 
 const floatingStyle = ref<Record<string, string>>({})
-// 4rem app header ($navbar-height) plus a small margin.
-const VIEWPORT_PADDING = {top: 72, right: 8, bottom: 8, left: 8}
+// 3rem app header ($navbar-height) plus a small margin.
+const VIEWPORT_PADDING = {top: 56, right: 8, bottom: 8, left: 8}
 
 async function updatePosition() {
 	if (!props.anchor || !popup.value || !props.placement) {

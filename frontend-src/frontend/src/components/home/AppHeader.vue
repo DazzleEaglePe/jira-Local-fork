@@ -4,97 +4,27 @@
 		aria-label="main navigation"
 		class="navbar d-print-none"
 	>
-		<RouterLink
-			:to="{ name: 'home' }"
-			class="logo-link"
-			:aria-label="$t('navigation.home')"
-		>
-			<Logo
-				width="164"
-				height="48"
-			/>
-		</RouterLink>
-
-		<MenuButton class="menu-button" />
-
-		<div
-			v-if="currentProject?.id"
-			class="project-title-wrapper"
-		>
-			<Breadcrumb
-				:aria-label="$t('navigation.breadcrumb')"
-				class="tw:min-w-0"
+		<!-- Jira-style layout: [toggle + logo] [search + create] [actions + user] -->
+		<div class="navbar-start">
+			<MenuButton />
+			<RouterLink
+				:to="{ name: 'home' }"
+				class="logo-link"
+				:aria-label="$t('navigation.home')"
 			>
-				<BreadcrumbList class="tw:flex-nowrap">
-					<BreadcrumbItem class="tw:hidden tw:md:inline-flex">
-						<BreadcrumbLink as-child>
-							<RouterLink :to="{ name: 'projects.index' }">
-								{{ $t('project.projects') }}
-							</RouterLink>
-						</BreadcrumbLink>
-					</BreadcrumbItem>
-					<template
-						v-for="ancestor in projectAncestors"
-						:key="ancestor.id"
-					>
-						<BreadcrumbSeparator class="tw:hidden tw:md:block" />
-						<BreadcrumbItem class="tw:hidden tw:md:inline-flex">
-							<BreadcrumbLink as-child>
-								<RouterLink :to="{ name: 'project.index', params: { projectId: ancestor.id } }">
-									{{ getProjectTitle(ancestor) }}
-								</RouterLink>
-							</BreadcrumbLink>
-						</BreadcrumbItem>
-					</template>
-					<BreadcrumbSeparator class="tw:hidden tw:md:block" />
-					<BreadcrumbItem class="tw:min-w-0">
-						<BreadcrumbPage class="project-title">
-							{{ currentProject.title === '' ? $t('misc.loading') : getProjectTitle(currentProject) }}
-						</BreadcrumbPage>
-					</BreadcrumbItem>
-				</BreadcrumbList>
-			</Breadcrumb>
-
-			<BaseButton
-				v-if="!isEditorContentEmpty(currentProject.description)"
-				:to="{ name: 'project.info', params: { projectId: currentProject.id } }"
-				class="project-title-button"
-			>
-				<span class="is-sr-only">{{ $t('project.description') }}</span>
-				<Icon icon="circle-info" />
-			</BaseButton>
-
-			<ProjectSettingsDropdown
-				v-if="canWriteCurrentProject && currentProject.id !== -1"
-				class="project-title-dropdown"
-				:project="currentProject"
-			>
-				<template #trigger="{ toggleOpen, open }">
-					<BaseButton
-						class="project-title-button"
-						:aria-expanded="open"
-						@click="toggleOpen"
-					>
-						<span class="is-sr-only">{{ $t('project.openSettingsMenu') }}</span>
-						<Icon
-							icon="ellipsis-h"
-							class="icon"
-						/>
-					</BaseButton>
-				</template>
-			</ProjectSettingsDropdown>
+				<Logo
+					width="120"
+					height="32"
+				/>
+			</RouterLink>
 		</div>
 
-		<div
-			v-else-if="pageTitle"
-			class="project-title-wrapper"
-		>
-			<span class="project-title">{{ pageTitle }}</span>
+		<div class="navbar-center">
+			<OpenQuickActions />
+			<CreateMenu />
 		</div>
 
 		<div class="navbar-end">
-			<OpenQuickActions />
-			<CreateMenu />
 			<TimerBadge />
 			<Notifications />
 			<BaseButton
@@ -108,26 +38,17 @@
 			<Dropdown>
 				<template #trigger="{ toggleOpen, open }">
 					<BaseButton
+						v-tooltip="authStore.userDisplayName"
 						class="username-dropdown-trigger"
-						variant="secondary"
-						:shadow="false"
+						:aria-label="authStore.userDisplayName"
 						:aria-expanded="open"
 						@click="toggleOpen"
 					>
 						<UserAvatar
 							:user="authStore.info"
-							:size="40"
+							:size="28"
 							class="avatar"
 						/>
-						<span class="username">{{ authStore.userDisplayName }}</span>
-						<span
-							class="mis-1 dropdown-icon icon is-small"
-							:style="{
-								transform: open ? 'rotate(180deg)' : 'rotate(0)',
-							}"
-						>
-							<Icon icon="chevron-down" />
-						</span>
 					</BaseButton>
 				</template>
 
@@ -168,13 +89,9 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-import { useI18n } from 'vue-i18n'
 
-import { PERMISSIONS as Permissions } from '@/constants/permissions'
 import { PRO_FEATURE } from '@/constants/proFeatures'
 
-import ProjectSettingsDropdown from '@/components/project/ProjectSettingsDropdown.vue'
 import Dropdown from '@/components/misc/Dropdown.vue'
 import DropdownItem from '@/components/misc/DropdownItem.vue'
 import Notifications from '@/components/notifications/Notifications.vue'
@@ -185,41 +102,16 @@ import MenuButton from '@/components/home/MenuButton.vue'
 import OpenQuickActions from '@/components/misc/OpenQuickActions.vue'
 import UserAvatar from '@/components/misc/UserAvatar.vue'
 import CreateMenu from '@/components/home/CreateMenu.vue'
-import {Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator} from '@/components/ui/breadcrumb'
-
-import { getProjectTitle } from '@/helpers/getProjectTitle'
-import { isEditorContentEmpty } from '@/helpers/editorContentEmpty'
 
 import { useBaseStore } from '@/stores/base'
 import { useConfigStore } from '@/stores/config'
 import { useAuthStore } from '@/stores/auth'
-import {useCurrentProject} from '@/composables/useCurrentProject'
 import {useColorScheme} from '@/composables/useColorScheme'
-import {useProjects} from '@/composables/useProjects'
 
 const { isDark, toggleTheme } = useColorScheme()
 const baseStore = useBaseStore()
-const {currentProject} = useCurrentProject()
-const projectList = useProjects()
-// Parents of the current project, shown in the breadcrumb before its title
-const projectAncestors = computed(() =>
-	currentProject.value ? projectList.getAncestors(currentProject.value).slice(0, -1) : [],
-)
 const background = computed(() => baseStore.background)
-const canWriteCurrentProject = computed(() =>
-	currentProject.value?.max_permission !== null &&
-	currentProject.value?.max_permission !== undefined &&
-	currentProject.value.max_permission > Permissions.READ,
-)
 const menuActive = computed(() => baseStore.menuActive)
-
-// Standalone pages (no project) surface their route's title in the header.
-const route = useRoute()
-const { t } = useI18n()
-const pageTitle = computed(() => {
-	const title = route.meta.title as string | undefined
-	return title ? t(title) : ''
-})
 
 const authStore = useAuthStore()
 
@@ -244,18 +136,13 @@ $user-dropdown-width-mobile: 5rem;
 	z-index: 30;
 
 	display: flex;
-	justify-content: space-between;
+	align-items: center;
 	gap: var(--navbar-gap-width);
-	min-block-size: $navbar-height;
+	block-size: $navbar-height;
+	padding-inline: .5rem .75rem;
 
-	background: var(--white);
-	border-block-end: 1px solid var(--border-light);
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-
-	@media screen and (min-width: $tablet) {
-		padding-inline-start: 2rem;
-		align-items: stretch;
-	}
+	background: var(--ui-background);
+	border-block-end: 1px solid var(--ui-border);
 
 	&.menu-active {
 		@media screen and (max-width: $tablet) {
@@ -265,27 +152,47 @@ $user-dropdown-width-mobile: 5rem;
 
 	// FIXME: notifications should provide a slot for the icon instead, so that we can style it as we want
 	:deep() {
+		// Jira-style square icon buttons (notifications, timer, theme)
 		.trigger-button {
-			color: var(--grey-600);
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			min-inline-size: 2rem;
+			block-size: 2rem;
+			border-radius: 4px;
+			color: var(--ui-muted-foreground);
 			font-size: var(--navbar-icon-size);
+			transition: color $transition, background-color $transition;
 
 			&:hover {
-				color: var(--text-strong);
+				color: var(--ui-foreground);
+				background: var(--ui-secondary);
 			}
 		}
 	}
+}
 
-	.theme-toggle-button {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		cursor: pointer;
-		color: var(--grey-600);
-		font-size: var(--navbar-icon-size);
-		transition: color $transition, background-color $transition;
+.navbar-start,
+.navbar-end {
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	gap: .25rem;
+}
 
-		&:hover {
-			color: var(--text-strong);
+// Search grows to fill the middle, with Create right next to it (as in Jira)
+.navbar-center {
+	flex: 1 1 auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: .5rem;
+	min-inline-size: 0;
+
+	:deep([data-slot='search-trigger']) {
+		@media screen and (min-width: $tablet) {
+			flex: 1 1 auto;
+			max-inline-size: 48rem;
 		}
 	}
 }
@@ -294,118 +201,29 @@ $user-dropdown-width-mobile: 5rem;
 	display: none;
 
 	@media screen and (min-width: $tablet) {
-		align-self: stretch;
 		display: flex;
 		align-items: center;
-		margin-inline-end: .5rem;
-	}
-}
-
-.menu-button {
-	align-self: stretch;
-	flex: 0 0 auto;
-
-	@media screen and (max-width: $tablet) {
-		margin-inline-start: 1rem;
-	}
-}
-
-// Jira-style breadcrumb, aligned to the start right after the menu button
-.project-title-wrapper {
-	display: flex;
-	align-items: center;
-
-	// this makes the truncated text of the project title work
-	// inside the flexbox parent
-	min-inline-size: 0;
-}
-
-.project-title {
-	display: block;
-	font-size: .875rem;
-	font-weight: 600;
-	// We need the following for overflowing ellipsis to work
-	text-overflow: ellipsis;
-	overflow: hidden;
-	white-space: nowrap;
-}
-
-.project-title-dropdown {
-	align-self: stretch;
-
-	.project-title-button {
-		flex-grow: 1;
-	}
-}
-
-.project-title-button {
-	align-self: stretch;
-	min-inline-size: var(--navbar-button-min-width);
-	display: flex;
-	place-items: center;
-	justify-content: center;
-	font-size: var(--navbar-icon-size);
-	color: var(--grey-600);
-	transition: color $transition;
-
-	&:hover {
-		color: var(--text-strong);
-	}
-}
-
-.navbar-end {
-	flex: 0 0 auto;
-	display: flex;
-	align-items: stretch;
-	gap: .25rem;
-	margin-inline-start: auto;
-
-	>* {
-		min-inline-size: var(--navbar-button-min-width);
+		padding-inline: .25rem;
 	}
 }
 
 .username-dropdown-trigger {
-	padding-inline-start: .75rem;
 	display: inline-flex;
 	align-items: center;
-	font-size: .85rem;
-	font-weight: 500;
-	gap: .5rem;
-	
-	:deep(.avatar) {
-		margin-inline-end: 0;
-	}
-	
-	[dir="rtl"] & {
-		flex-direction: row-reverse;
-	}
+	justify-content: center;
+	inline-size: 2rem;
+	block-size: 2rem;
+	border-radius: 100%;
+	margin-inline-start: .25rem;
 
-	@media screen and (max-width: $tablet) {
-		padding-inline-end: .5rem;
+	&:hover,
+	&:focus-visible {
+		box-shadow: 0 0 0 2px var(--ui-secondary);
 	}
-
-	@media screen and (min-width: $tablet) {
-		padding-inline-end: .75rem;
-	}
-}
-
-.username {
-	font-family: $vikunja-font;
-
-	@media screen and (max-width: $tablet) {
-		display: none;
-	}
-}
-
-.dropdown-icon {
-	transition: transform $transition;
 }
 
 .avatar {
 	border-radius: 100%;
 	vertical-align: middle;
-	block-size: 40px;
-	margin-inline-end: .5rem;
 }
 </style>

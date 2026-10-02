@@ -872,9 +872,9 @@ $bucket-right-margin: 1rem;
 // A shade below the page in both themes, so the --white cards read as raised. Opaque on purpose:
 // the sticky footer has to hide the cards scrolling under it.
 $bucket-background: color-mix(in srgb, black 6%, var(--site-background));
-// Jira-style page header in ProjectWrapper: title (30px + .75rem) and toolbar row (34px + 1rem)
-$project-page-header-height: 92px;
-$crazy-height-calculation: '100vh - 4.5rem - 1.5rem - 1rem - 1.5rem - 11px - #{$project-page-header-height}';
+// Jira-style page header in ProjectWrapper: breadcrumb (20px + .25rem), title (32px + .75rem) and toolbar row (34px + 1rem)
+$project-page-header-height: 118px;
+$crazy-height-calculation: '100vh - #{$navbar-height} - .5rem - 1.5rem - 1rem - 1.5rem - 11px - #{$project-page-header-height}';
 $crazy-height-calculation-tasks: '#{$crazy-height-calculation} - 1rem - 2.5rem - 2rem - #{$button-height} - 1rem';
 $filter-container-height: '1rem - #{$switch-view-height}';
 

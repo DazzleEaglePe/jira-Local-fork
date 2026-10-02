@@ -40,7 +40,7 @@ const shortcutHint = isAppleDevice() ? '⌘K' : 'Ctrl K'
 	<button
 		type="button"
 		data-slot="search-trigger"
-		class="tw:flex tw:h-9 tw:w-9 tw:items-center tw:gap-2 tw:self-center tw:rounded-md tw:border tw:border-input/40 tw:bg-background tw:px-2.5 tw:text-sm tw:text-muted-foreground tw:transition-colors tw:hover:bg-secondary tw:focus-visible:ring-3 tw:focus-visible:ring-ring/50 tw:md:w-64"
+		class="tw:flex tw:h-8 tw:w-8 tw:items-center tw:gap-2 tw:self-center tw:rounded-md tw:border tw:border-input/40 tw:bg-background tw:px-2.5 tw:text-sm tw:text-muted-foreground tw:transition-colors tw:hover:bg-secondary tw:focus-visible:ring-3 tw:focus-visible:ring-ring/50 tw:md:w-auto"
 		:title="$t('keyboardShortcuts.quickSearch')"
 		:aria-label="$t('keyboardShortcuts.quickSearch')"
 		@click="openQuickActions"

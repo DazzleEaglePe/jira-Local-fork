@@ -185,7 +185,7 @@ onBeforeUnmount(() => {
 }
 
 .app-container {
-	min-block-size: calc(100vh - 65px);
+	min-block-size: calc(100vh - #{$navbar-height} - 1px);
 
 	@media screen and (max-width: $tablet) {
 		padding-block-start: $navbar-height;
@@ -205,7 +205,7 @@ onBeforeUnmount(() => {
 	@media screen and (max-width: $tablet) {
 		margin-inline-start: 0;
 		margin-inline-end: 0;
-		min-block-size: calc(100vh - 4rem);
+		min-block-size: calc(100vh - #{$navbar-height});
 	}
 
 	@media screen and (min-width: $tablet) {

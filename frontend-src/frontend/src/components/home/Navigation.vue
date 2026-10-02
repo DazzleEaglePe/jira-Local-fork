@@ -43,17 +43,6 @@
 				</li>
 				<li>
 					<RouterLink
-						v-shortcut="SHORTCUTS.navigation.projects"
-						:to="{ name: 'projects.index'}"
-					>
-						<span class="menu-item-icon icon">
-							<FolderKanban />
-						</span>
-						{{ $t('project.projects') }}
-					</RouterLink>
-				</li>
-				<li>
-					<RouterLink
 						v-shortcut="SHORTCUTS.navigation.labels"
 						:to="{ name: 'labels.index'}"
 					>
@@ -95,6 +84,9 @@
 				class="menu"
 				:aria-label="$t('project.pseudo.favorites.title')"
 			>
+				<p class="menu-section-sublabel">
+					{{ $t('project.pseudo.favorites.title') }}
+				</p>
 				<ProjectsNavigation
 					:model-value="favoriteProjects"
 					:can-edit-order="false"
@@ -107,6 +99,9 @@
 				class="menu"
 				:aria-label="$t('navigation.savedFilters')"
 			>
+				<p class="menu-section-sublabel">
+					{{ $t('navigation.savedFilters') }}
+				</p>
 				<ProjectsNavigation
 					:model-value="savedFilterProjects"
 					:can-edit-order="false"
@@ -118,8 +113,18 @@
 				class="menu"
 				:aria-label="$t('project.projects')"
 			>
+				<!-- Jira's "Espacio  +" row: link to all projects with a quick create action -->
 				<div class="menu-section-heading">
-					<span>{{ $t('project.projects') }}</span>
+					<RouterLink
+						v-shortcut="SHORTCUTS.navigation.projects"
+						:to="{name: 'projects.index'}"
+						class="menu-section-link"
+					>
+						<span class="menu-item-icon icon">
+							<Orbit />
+						</span>
+						{{ $t('project.projects') }}
+					</RouterLink>
 					<RouterLink
 						v-tooltip="$t('project.create.header')"
 						:to="{name: 'project.create'}"
@@ -153,7 +158,7 @@
 
 <script setup lang="ts">
 import {computed} from 'vue'
-import {CalendarDays, Clock, FolderKanban, LayoutDashboard, Plus, Tag, Users} from '@lucide/vue'
+import {CalendarDays, Clock, LayoutDashboard, Orbit, Plus, Tag, Users} from '@lucide/vue'
 
 import {SHORTCUTS} from '@/constants/shortcuts'
 import PoweredByLink from '@/components/home/PoweredByLink.vue'
@@ -198,10 +203,10 @@ const savedFilterProjects = computed(() => projectList.savedFilterProjects)
 
 	display: flex;
 	flex-direction: column;
-	background: var(--white);
-	border-inline-end: 1px solid var(--border-light);
-	color: $vikunja-nav-color;
-	padding: 1rem 0;
+	background: var(--ui-background);
+	border-inline-end: 1px solid var(--ui-border);
+	color: var(--ui-foreground);
+	padding: .75rem 0;
 	transition: transform $transition-duration ease-in;
 	position: fixed;
 	inset-block-start: $navbar-height;
@@ -244,13 +249,12 @@ const savedFilterProjects = computed(() => projectList.savedFilterProjects)
 
 	&:hover,
 	&:active {
-		background-color: var(--primary);
+		background-color: var(--ui-ring);
 	}
 }
 
 .top-menu .menu-list {
 	li {
-		font-weight: 500;
 		font-family: $vikunja-font;
 	}
 
@@ -262,21 +266,66 @@ const savedFilterProjects = computed(() => projectList.savedFilterProjects)
 }
 
 .menu + .menu {
-	padding-block-start: math.div($navbar-padding, 2);
+	padding-block-start: .5rem;
 }
 
-// Jira-style section label ("PROJECTS  +")
+// Jira's "Espacio  +" row: a regular nav row whose + appears on hover
 .menu-section-heading {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	block-size: 32px;
 	margin-inline: .5rem;
-	padding-block: .25rem;
-	padding-inline: .75rem .25rem;
-	font-size: .6875rem;
-	font-weight: 700;
-	letter-spacing: .04em;
-	text-transform: uppercase;
+	padding-inline-end: .25rem;
+	border-radius: 4px;
+
+	&:hover {
+		background: var(--ui-secondary);
+	}
+
+	@media (hover: hover) and (pointer: fine) {
+		.menu-section-action {
+			opacity: 0;
+		}
+
+		&:hover .menu-section-action,
+		.menu-section-action:focus-visible {
+			opacity: 1;
+		}
+	}
+}
+
+.menu-section-link {
+	flex: 1 1 auto;
+	display: flex;
+	align-items: center;
+	gap: .75rem;
+	block-size: 100%;
+	padding-inline-start: .75rem;
+	font-size: .875rem;
+	color: var(--ui-foreground);
+
+	.menu-item-icon {
+		display: inline-flex;
+		color: var(--ui-muted-foreground);
+	}
+
+	svg {
+		inline-size: 1rem;
+		block-size: 1rem;
+	}
+
+	&.router-link-exact-active {
+		color: var(--ui-accent-foreground);
+		font-weight: 600;
+	}
+}
+
+// Jira's small bold group label ("Recientes")
+.menu-section-sublabel {
+	margin: .25rem 0 .125rem;
+	padding-inline: 1.25rem;
+	font-size: .75rem;
+	font-weight: 600;
 	color: var(--ui-muted-foreground);
 }
 

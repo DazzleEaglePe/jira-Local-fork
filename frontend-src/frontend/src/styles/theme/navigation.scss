@@ -23,7 +23,7 @@
     // Jira-style rows: compact, subtle hover (tokens from styles/tailwind.css)
     &.other-menu-items li,
     li > div {
-      height: 36px;
+      height: 32px;
       display: flex;
       align-items: center;
       margin-inline: .5rem;
@@ -106,7 +106,7 @@
       > a {
         color: var(--ui-foreground);
         font-size: .875rem;
-        padding: .5rem .5rem .5rem .25rem;
+        padding: .375rem .5rem .375rem .25rem;
         transition: all 0.2s ease;
 
         border-radius: 4px;
