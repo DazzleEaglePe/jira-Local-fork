@@ -535,6 +535,9 @@
 			"organization": "Añadir a la tarjeta",
 			"management": "Acciones",
 			"dateAndTime": "Fechas",
+			"detailsTitle": "Detalles",
+			"moreActions": "Más acciones",
+			"copyLink": "Copiar enlace",
 			"due": "Vence {at}",
 			"delete": {
 				"header": "Eliminar esta tarea",

@@ -274,7 +274,7 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 $modal-margin: 4rem;
-$modal-width: 1024px;
+$modal-width: 1152px; // room for the Jira-style two-column task detail
 
 .modal-dialog {
 	// Reset UA dialog styles
