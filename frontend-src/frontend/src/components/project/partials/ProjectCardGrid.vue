@@ -1,0 +1,56 @@
+<template>
+	<ul
+		class="project-grid"
+		:class="{ 'show-even-number-of-projects': showEvenNumberOfProjects }"
+	>
+		<li
+			v-for="(item, index) in filteredProjects"
+			:key="`project_${item.id}_${index}`"
+			class="project-grid-item"
+		>
+			<ProjectCard :project="item" />
+		</li>
+	</ul>
+</template>
+
+<script lang="ts" setup>
+import {computed} from 'vue'
+import type {ProjectResponse} from '@/client/queries/projects'
+
+import ProjectCard from './ProjectCard.vue'
+
+const props = withDefaults(defineProps<{
+	projects: ProjectResponse[],
+	showArchived?: boolean,
+	itemLimit?: boolean,
+	showEvenNumberOfProjects?: boolean,
+}>(), {
+	showArchived: false,
+	itemLimit: false,
+	showEvenNumberOfProjects: false,
+})
+
+const filteredProjects = computed(() => {
+	return props.showArchived
+		? props.projects
+		: props.projects.filter(project => !project.is_archived)
+})
+</script>
+
+<style lang="scss" scoped>
+.project-grid {
+	--project-grid-item-height: 76px;
+	--project-grid-gap: 0.75rem;
+	margin: 0; // reset li
+	list-style-type: none;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	grid-auto-rows: var(--project-grid-item-height);
+	gap: var(--project-grid-gap);
+}
+
+.project-grid-item {
+	display: grid;
+	margin-block-start: 0; // remove padding coming form .content li + li
+}
+</style>
